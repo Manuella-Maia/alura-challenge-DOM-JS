@@ -1,0 +1,15 @@
+{
+  "name": "alura-challenge-dom-js",
+  "version": "1.0.0",
+  "description": "// função para fazer a leitura do arquivo json e devolver um array de palavras\r const loadWords = async () => {\r     try {\r         const resp = await fetch('./json/dataWords.json')// acessa a api externa  (arquivo json)",
+  "main": "script.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^30.3.0"
+  }
+}

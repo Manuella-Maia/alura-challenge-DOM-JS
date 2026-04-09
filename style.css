@@ -1,0 +1,107 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    background-color: #14161C;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+main{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    width: 100%;
+}
+
+h2{
+    color: #ffff;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin-left: 50px;
+}
+
+header{
+    margin-bottom: 50px;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    padding: 20px 0 20px 40px;
+    border-bottom: 1px solid #818384;
+    
+}
+
+.tabuleiro{
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.teclado{
+    width: 475px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.linha{
+    display: flex;
+    gap: 7px 
+}
+
+.quadrado{
+    width: 62px;
+    height: 62px;
+    border: 1px solid #585858;
+    border-width: 1px;
+    border-radius: 0px;
+}
+
+.quadrado-teclado{
+    width: 43px;
+    height: 58px;
+    border-width: 1px;
+    background-color: #818384;
+    border-radius: 1px;
+    font-size: 22px;
+}
+
+.quadrado,
+.quadrado-teclado,
+.quadrado-teclado-enter,
+.quadrado-teclado-apagar{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color:#ffff;
+    font-weight: bold;
+}
+
+.quadrado-teclado-enter,
+.quadrado-teclado-apagar{
+    width: 83px;
+    height: 58px;
+    background-color: #818384;
+    border-radius: 1px;
+}
+
+.linha-teclado{
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    width: 100%;
+    
+}
