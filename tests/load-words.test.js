@@ -14,4 +14,4 @@ describe('Teste da função loadWords', () => {
         expect(result).toEqual(['TESTE', 'SABER'])// toEqual iguinora a diferença de endereço/local dos array/objeto
         expect(global.fetch).toHaveBeenCalled();
     })
-})
+});
