@@ -50,3 +50,18 @@ npx jest tests/randomly-one-Word.test.js
 
 # Rodar apenas testes de API
 npx jest tests/load-words.test.js
+
+# Rodar apenas testes de DOM
+npx jest tests/game.test.js
+
+# Ver detalhes de cada teste (passou/falhou com descrição)
+npx jest --verbose
+
+# Rodar em modo watch (reroda automaticamente ao salvar um arquivo)
+npx jest --watch
+
+# Ver cobertura de código (quais linhas do script.js estão sendo testadas)
+npx jest --coverage
+
+# Rodar todos os testes
+npx jest

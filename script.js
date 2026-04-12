@@ -3,10 +3,8 @@ const loadWords = async () => {
     try {
         const req = await fetch('./json/dataWords.json')
 
-        if(!req.ok){
-            throw new Error('Erro ao acessar API de palavras')
-        }
-
+        if(!req.ok) throw new Error('Erro ao acessar API de palavras')
+        
         const dados = await req.json()
 
         return dados.words
@@ -28,114 +26,111 @@ const randomlyWord = function(words){
     return words[indexRandom]
 }
 
-
-const tabuleiro = document.querySelector('.tabuleiro');
-const linha = document.querySelector('.linha');
-const quadrado = document.querySelectorAll('.quadrado');
-
-const teclado = document.querySelector('.teclado');
-const linhaTeclado = document.querySelector('.linha-teclado');
-const teclaTeclado = document.querySelector('.quadrado-teclado');
-
-let linhaAtual = 0;
-let indexLetra = 0;
-let palavraDaVez = "";
-
-
-loadWords().then(words => {
-    palavraDaVez = randomlyWord(words).toLocaleUpperCase()
-})
-
-//passar a palavra sorteada para toUperCase()
-
-document.addEventListener('keydown', (event) => {
-    const tecla = event.key.toLocaleUpperCase() // pega qual foi a tecla prescionada
-
-    if(tecla.length === 1 && tecla >= "A" && tecla <= "Z"){
-        //chama função de adcionar letra
-        if(indexLetra < 5){
-
-            const posicaoTabuleiro = (linhaAtual * 5) + indexLetra
-            adcionarLetra(tecla,posicaoTabuleiro)
-            indexLetra++
-        }
-    }else if(tecla === 'BACKSPACE'){// ação do butão de apagar === "APAGAR" ||
-        //caham função de apagar
-        if(indexLetra > 0){
-            indexLetra--
-            const posicaoTabuleiro = (linhaAtual * 5) + indexLetra
-            apagarLetra(posicaoTabuleiro)
-        }
-    }else if(tecla === "ENTER"){
-        if(indexLetra === 5){
-            const palpiteGerado = montarPalpite()
-
-            validarLetras(palpiteGerado,palavraDaVez)
-
-            if(palpiteGerado === palavraDaVez){
-                alert("Parabéns! Você acertou!");
-
-            }else{
-                linhaAtual++; 
-                indexLetra = 0;
-
-                if(linhaAtual === 6){
-                    alert('Fim do jogo ! A palavra era: ',palavraDaVez)
-                }
-            }
-            
-        }
-    }
-})
-
+//--- Funções do DOM ---
 const adcionarLetra = function(tecla,posicao){
-    quadrado[posicao].textContent = tecla
-}
+    const quadrado = document.querySelectorAll('.quadrado');
+    quadrado[posicao].textContent = tecla;
+};
 
 const apagarLetra = function(posicao){
-    quadrado[posicao].textContent = ""
+    // if(posicao < 0) throw new Error('Possição inválida ! o index da letra deve ser maior que 0');
+    if(posicao < 0) return
+
+    const quadrado = document.querySelectorAll('.quadrado');
+    quadrado[posicao].textContent = "";
 }
 
-const montarPalpite = function(){
-    let palpite = ""
-    let inicioDaLinha = linhaAtual * 5
+const montarPalpite = function(linhaAtual){
+    const quadrado = document.querySelectorAll('.quadrado');
+    let palpite = "";
+    let inicioDaLinha = linhaAtual * 5;
 
     // O loop começa no primeiro quadrado da linha
     // E vai até o quinto quadrado dessa mesma linha
     for(let i = 0; i < 5; i++){
         const letra = quadrado[inicioDaLinha + i].textContent// qual linha esta + posição da letra na linha
-        palpite += letra
+        palpite += letra;
     }
-
-    console.log("Palavra montada:", palpite);
 
     return palpite;
 }
 
-const validarLetras =  function(palpite, palavraRandomica){
-    for(let i = 0; i < 5; i++){
+const validarLetras =  function(palpite, palavraRandomica, linhaAtual){
+    const quadrado = document.querySelectorAll('.quadrado');
 
+    for(let i = 0; i < 5; i++){
         const letraPalpite = palpite[i];
         const letraCorreta = palavraRandomica[i];
         const posicaoNoDOM = (linhaAtual * 5) + i;
 
         if(letraPalpite === letraCorreta){
 
-            quadrado[posicaoNoDOM].classList.add('posicao-correta')
+            quadrado[posicaoNoDOM].classList.add('posicao-correta');
 
         }else if(palavraRandomica.includes(letraPalpite)){
 
-             quadrado[posicaoNoDOM].classList.add('posicao-errada')
+             quadrado[posicaoNoDOM].classList.add('posicao-errada');
 
         }else{
-            quadrado[posicaoNoDOM].classList.add('nao-existe')
+            quadrado[posicaoNoDOM].classList.add('nao-existe');
         }
     }
 }
 
+const handleKeyDown = function(tecla,estado){
+    let {linhaAtual, indexLetra, palavraDaVez} = estado;
 
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { loadWords, randomlyWord };
+    if(tecla.length === 1 && tecla >= "A" && tecla <= "Z"){
+            if(indexLetra < 5){
+                const posicaoTabuleiro = (linhaAtual * 5) + indexLetra;
+                adcionarLetra(tecla,posicaoTabuleiro);
+                indexLetra++;
+            }
+        }else if(tecla === 'BACKSPACE'){// ação do butão de apagar === "APAGAR" ||
+            if(indexLetra > 0){
+                indexLetra--;
+                const posicaoTabuleiro = (linhaAtual * 5) + indexLetra;
+                apagarLetra(posicaoTabuleiro);
+            }
+        }else if(tecla === "ENTER"){
+            if(indexLetra === 5){
+                const palpiteGerado = montarPalpite(linhaAtual);
+                validarLetras(palpiteGerado, palavraDaVez, linhaAtual);
+
+                if(palpiteGerado === palavraDaVez){
+                    alert("Parabéns! Você acertou!");
+                }else{
+                    linhaAtual++; 
+                    indexLetra = 0;
+                    if(linhaAtual === 6){
+                        alert('Fim do jogo ! A palavra era: ',palavraDaVez);
+                }
+            }
+        }
+    }
+
+    return {linhaAtual, indexLetra, palavraDaVez}
 }
 
-// implementar testes de unidade para a logica do DOM
+
+const init = async () => {
+    const words = await loadWords();
+
+    let estadoAtual = {
+        linhaAtual: 0,
+        indexLetra: 0,
+        palavraDaVez: randomlyWord(words).toLocaleUpperCase(),
+    };
+
+    document.addEventListener('keydown', (event) => {
+        const tecla = event.key.toLocaleUpperCase() // pega qual foi a tecla prescionada
+        estadoAtual = handleKeyDown(tecla, estadoAtual)// ← chama e salva o estado novo
+    })
+}
+
+// Só inicializa no browser, nunca no Jest
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { loadWords, randomlyWord, adcionarLetra, apagarLetra, handleKeyDown};
+}else{
+    init();
+}
