@@ -15,7 +15,7 @@ const loadWords = async () => {
 }
 
 //--- Sorteio da palavra---
-const randomlyWord = function(words){
+const randomlyWord = (words) => {
 
     if(!words || words.length === 0) return null
  
@@ -23,16 +23,18 @@ const randomlyWord = function(words){
 
     const indexRandom = Math.floor(number * words.length)
 
+    // console.log('palavra da vez:', words[indexRandom])
+
     return words[indexRandom]
 }
 
 //--- Funções do DOM ---
-const adcionarLetra = function(tecla,posicao){
+const adcionarLetra = (tecla,posicao) => {
     const quadrado = document.querySelectorAll('.quadrado');
     quadrado[posicao].textContent = tecla;
 };
 
-const apagarLetra = function(posicao){
+const apagarLetra = (posicao) => {
     // if(posicao < 0) throw new Error('Possição inválida ! o index da letra deve ser maior que 0');
     if(posicao < 0) return
 
@@ -40,7 +42,7 @@ const apagarLetra = function(posicao){
     quadrado[posicao].textContent = "";
 }
 
-const montarPalpite = function(linhaAtual){
+const montarPalpite = (linhaAtual) => {
     const quadrado = document.querySelectorAll('.quadrado');
     let palpite = "";
     let inicioDaLinha = linhaAtual * 5;
@@ -55,29 +57,57 @@ const montarPalpite = function(linhaAtual){
     return palpite;
 }
 
-const validarLetras =  function(palpite, palavraRandomica, linhaAtual){
-    const quadrado = document.querySelectorAll('.quadrado');
+const contarInsidenciaLetras = (palavraRandomica) => {
 
+    if(palavraRandomica.length === 0) return {}
+
+    const objetoDeInsidencia = {};// vai armazenar a qdt de cada letra na palavra 
+
+    for(let i = 0; i < palavraRandomica.length; i++){
+        const letraAtual = palavraRandomica[i];
+        
+        if(objetoDeInsidencia[letraAtual] !== undefined){
+            objetoDeInsidencia[letraAtual]++;
+        }else{
+            objetoDeInsidencia[letraAtual] = 1;
+        };
+    };
+
+    return objetoDeInsidencia;
+};
+
+const validarLetras = (palpite, palavraRandomica, linhaAtual, objetoDeInsidencia) => {
+    const quadrado = document.querySelectorAll('.quadrado');
+    
+    // --- Loop para validar letras VERDES ---
     for(let i = 0; i < 5; i++){
         const letraPalpite = palpite[i];
-        const letraCorreta = palavraRandomica[i];
+        const posicaoNoDOM = (linhaAtual * 5) + i;
+        
+        if(letraPalpite === palavraRandomica[i]){
+            quadrado[posicaoNoDOM].classList.add('posicao-correta');
+            objetoDeInsidencia[letraPalpite]--;
+        }
+    }
+
+    // --- Loop para validar letras AMARELAS ou CINZAS ---
+    for(let i = 0; i < 5; i++){
+        const letraPalpite = palpite[i];
         const posicaoNoDOM = (linhaAtual * 5) + i;
 
-        if(letraPalpite === letraCorreta){
-
-            quadrado[posicaoNoDOM].classList.add('posicao-correta');
-
-        }else if(palavraRandomica.includes(letraPalpite)){
-
-             quadrado[posicaoNoDOM].classList.add('posicao-errada');
+        if(letraPalpite === palavraRandomica[i]) continue;// pula as letras já marcadas como verdes
+        
+       if(objetoDeInsidencia[letraPalpite] !== undefined && objetoDeInsidencia[letraPalpite] > 0){//corrigir para não pintar letras repetidas na mesma posição so se outver
+            quadrado[posicaoNoDOM].classList.add('posicao-errada');
+            objetoDeInsidencia[letraPalpite]--;
 
         }else{
-            quadrado[posicaoNoDOM].classList.add('nao-existe');
+            quadrado[posicaoNoDOM].classList.add('letra-ausente');
         }
     }
 }
 
-const handleKeyDown = function(tecla,estado){
+const handleKeyDown = (tecla,estado) => {
     let {linhaAtual, indexLetra, palavraDaVez} = estado;
 
     if(tecla.length === 1 && tecla >= "A" && tecla <= "Z"){
@@ -95,13 +125,16 @@ const handleKeyDown = function(tecla,estado){
         }else if(tecla === "ENTER"){
             if(indexLetra === 5){
                 const palpiteGerado = montarPalpite(linhaAtual);
-                validarLetras(palpiteGerado, palavraDaVez, linhaAtual);
+                const obejto = contarInsidenciaLetras(palavraDaVez);
+
+                validarLetras(palpiteGerado, palavraDaVez, linhaAtual,obejto);
 
                 if(palpiteGerado === palavraDaVez){
                     alert("Parabéns! Você acertou!");
                 }else{
                     linhaAtual++; 
                     indexLetra = 0;
+
                     if(linhaAtual === 6){
                         alert('Fim do jogo ! A palavra era: ',palavraDaVez);
                 }
@@ -130,7 +163,8 @@ const init = async () => {
 
 // Só inicializa no browser, nunca no Jest
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { loadWords, randomlyWord, adcionarLetra, apagarLetra, handleKeyDown};
+    module.exports = { loadWords, randomlyWord, adcionarLetra, 
+        apagarLetra, handleKeyDown, contarInsidenciaLetras, validarLetras};
 }else{
     init();
 }

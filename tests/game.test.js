@@ -1,4 +1,3 @@
-
 const { JSDOM } = require('jsdom'); //biblioteca que permite simular a logica do html e os eventos DOM
 const path = require('path');
 const fs = require('fs');

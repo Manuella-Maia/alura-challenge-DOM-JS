@@ -54,6 +54,10 @@ npx jest tests/load-words.test.js
 # Rodar apenas testes de DOM
 npx jest tests/game.test.js
 
+# Rodar apenas testes de validação da cor das letras
+npx jest tests/letter-status.test.js
+
+
 # Ver detalhes de cada teste (passou/falhou com descrição)
 npx jest --verbose
 
