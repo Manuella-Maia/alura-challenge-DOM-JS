@@ -57,6 +57,8 @@ npx jest tests/game.test.js
 # Rodar apenas testes de validação da cor das letras
 npx jest tests/letter-status.test.js
 
+# Rodar apenas testes de Exibição de notificações
+npx jest tests/show-notifications.test.js
 
 # Ver detalhes de cada teste (passou/falhou com descrição)
 npx jest --verbose

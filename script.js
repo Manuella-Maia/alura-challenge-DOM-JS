@@ -28,6 +28,49 @@ const randomlyWord = (words) => {
     return words[indexRandom]
 }
 
+// --- Notificações ---
+const showSuccess = (msg) => {
+    Toastify({
+        text: msg,
+        duration: -1,       // ms até sumir (-1 para não sumir)
+        gravity: "top",       // "top" | "bottom"
+        position: "center",    // "left" | "center" | "right"
+        stopOnFocus: true,
+        close: true,
+        style: {
+            background: "#538D4E",
+        },
+    }).showToast();
+}
+
+const showError = (msg) => {
+    Toastify({
+        text: msg,
+        duration: 4000,
+        gravity: "top",
+        position: "center",
+        stopOnFocus: true,
+        close: true,
+        style: {
+            background: "#BA4747",
+        },
+    }).showToast();
+}
+
+const showInfo = (msg) => {
+    Toastify({
+        text: msg,
+        duration: 4000,
+        gravity: "top",
+        position: "center",
+        stopOnFocus: true,
+        close: true,
+        style: {
+            background: "#B59F3B",
+        },
+    }).showToast();
+}
+
 //--- Funções do DOM ---
 const adcionarLetra = (tecla,posicao) => {
     const quadrado = document.querySelectorAll('.quadrado');
@@ -115,12 +158,16 @@ const handleKeyDown = (tecla,estado) => {
                 const posicaoTabuleiro = (linhaAtual * 5) + indexLetra;
                 adcionarLetra(tecla,posicaoTabuleiro);
                 indexLetra++;
+            }else{
+                showInfo(NOTIFICACAO_LIMITE_LETRAS_POR_LINHA_ATINGIDO)
             }
         }else if(tecla === 'BACKSPACE'){// ação do butão de apagar === "APAGAR" ||
             if(indexLetra > 0){
                 indexLetra--;
                 const posicaoTabuleiro = (linhaAtual * 5) + indexLetra;
                 apagarLetra(posicaoTabuleiro);
+            }else{
+                showInfo(NOTIFICACAO_BACKSPACE_PALPITE_VAZIO);
             }
         }else if(tecla === "ENTER"){
             if(indexLetra === 5){
@@ -130,20 +177,42 @@ const handleKeyDown = (tecla,estado) => {
                 validarLetras(palpiteGerado, palavraDaVez, linhaAtual,obejto);
 
                 if(palpiteGerado === palavraDaVez){
-                    alert("Parabéns! Você acertou!");
+                    // alert("Parabéns! Você acertou!");
+                    showSuccess(NOTIFICACAO_FIM_DE_JOGO_ACERTO)
                 }else{
                     linhaAtual++; 
                     indexLetra = 0;
 
                     if(linhaAtual === 6){
-                        alert('Fim do jogo ! A palavra era: ',palavraDaVez);
+                        // alert(`Fim do jogo ! A palavra era: ${palavraDaVez}`);
+                        showError(`Fim do jogo ! A palavra era: ${palavraDaVez}`)
+                    }
                 }
+            }else{
+                showInfo(NOTIFICACAO_PALPITE_INCOMPLETO);
             }
+        }else{
+            showInfo(NOTIFICACAO_TECLA_INVALIDA);
         }
-    }
 
     return {linhaAtual, indexLetra, palavraDaVez}
 }
+
+const NOTIFICACAO_TECLA_BACKSPACE_PRESSIONADA = 'Tecla Backspace pressionada'
+const NOTIFICACAO_TECLA_ENTER_PRESSIONADA = 'Tecla Enter pressionada'
+const NOTIFICACAO_TECLA_INVALIDA = 'Tecla pressionada inválida'
+
+const NOTIFICACAO_BACKSPACE_PALPITE_VAZIO = 'Não é possível apagar um palpite vazio'
+
+const NOTIFICACAO_PALPITE_VAZIO = 'Palpite vazio'
+const NOTIFICACAO_PALPITE_INCOMPLETO = 'Palpite incompleto'
+
+
+const NOTIFICACAO_LIMITE_TENTATIVAS_ATINGIDO = 'Limite máximo de tentativas atingido'
+const NOTIFICACAO_LIMITE_LETRAS_POR_LINHA_ATINGIDO = 'Limite máximo de letras por linha atingido'
+
+const NOTIFICACAO_FIM_DE_JOGO_ACERTO = 'Você acertou! Fim de jogo!'
+// const NOTIFICACAO_FIM_DE_JOGO_ERRO = `Fim do jogo ! A palavra era: ${palavraDaVez}`
 
 
 const init = async () => {
@@ -164,7 +233,8 @@ const init = async () => {
 // Só inicializa no browser, nunca no Jest
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { loadWords, randomlyWord, adcionarLetra, 
-        apagarLetra, handleKeyDown, contarInsidenciaLetras, validarLetras};
+        apagarLetra, handleKeyDown, contarInsidenciaLetras, validarLetras, 
+        showSuccess, showError, showInfo};
 }else{
     init();
 }
