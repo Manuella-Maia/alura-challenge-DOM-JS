@@ -71,24 +71,33 @@ const showInfo = (msg) => {
     }).showToast();
 }
 
-//--- Funções do DOM ---
-const adcionarLetra = (tecla,posicao) => {
+//--- Funções Logica do jogo ---
+const adcionarLetra = (tecla, posicao, button, objButtons) => {
     const quadrado = document.querySelectorAll('.quadrado');
     quadrado[posicao].textContent = tecla;
+
+    if(button != null && button != undefined){
+        objButtons[tecla] = button;
+    }
 };
 
-const apagarLetra = (posicao) => {
+const apagarLetra = (posicao, tecla, button, objButtons) => {
     // if(posicao < 0) throw new Error('Possição inválida ! o index da letra deve ser maior que 0');
-    if(posicao < 0) return
+    if(posicao < 0) return;
 
     const quadrado = document.querySelectorAll('.quadrado');
     quadrado[posicao].textContent = "";
+
+    if(button){//null e undefined já são faly
+        delete objButtons[tecla];//apaga chave-valor do objeto
+    }
 }
 
 const montarPalpite = (linhaAtual) => {
     const quadrado = document.querySelectorAll('.quadrado');
     let palpite = "";
     let inicioDaLinha = linhaAtual * 5;
+    //aqui entra a logica de descobrir os butoes clicados !
 
     // O loop começa no primeiro quadrado da linha
     // E vai até o quinto quadrado dessa mesma linha
@@ -119,7 +128,7 @@ const contarInsidenciaLetras = (palavraRandomica) => {
     return objetoDeInsidencia;
 };
 
-const validarLetras = (palpite, palavraRandomica, linhaAtual, objetoDeInsidencia) => {
+const validarLetras = (palpite, palavraRandomica, linhaAtual, objetoDeInsidencia, objButtons) => {
     const quadrado = document.querySelectorAll('.quadrado');
     
     // --- Loop para validar letras VERDES ---
@@ -129,7 +138,14 @@ const validarLetras = (palpite, palavraRandomica, linhaAtual, objetoDeInsidencia
         
         if(letraPalpite === palavraRandomica[i]){
             quadrado[posicaoNoDOM].classList.add('posicao-correta');
+            // console.log('letraPalpite:', letraPalpite);
+            // console.log('objButtons:', objButtons);
+            // console.log('elemento:', objButtons[letraPalpite]);
+            if(objButtons[letraPalpite]){
+                objButtons[letraPalpite].classList.add('posicao-correta');
+            }
             objetoDeInsidencia[letraPalpite]--;
+            
         }
     }
 
@@ -142,15 +158,25 @@ const validarLetras = (palpite, palavraRandomica, linhaAtual, objetoDeInsidencia
         
        if(objetoDeInsidencia[letraPalpite] !== undefined && objetoDeInsidencia[letraPalpite] > 0){//corrigir para não pintar letras repetidas na mesma posição so se outver
             quadrado[posicaoNoDOM].classList.add('posicao-errada');
+
+            if(objButtons[letraPalpite]){
+                objButtons[letraPalpite].classList.add('posicao-errada');
+            }
             objetoDeInsidencia[letraPalpite]--;
 
         }else{
             quadrado[posicaoNoDOM].classList.add('letra-ausente');
+
+            if(objButtons[letraPalpite]){
+                objButtons[letraPalpite].classList.add('letra-ausente');
+            }
         }
     }
 }
 
-const handleKeyDown = (tecla,estado) => {
+// --- Funções do Dom ---
+
+const handleKeyDown = (tecla,estado, objButtons) => {
     let {linhaAtual, indexLetra, palavraDaVez} = estado;
 
     if(tecla.length === 1 && tecla >= "A" && tecla <= "Z"){
@@ -165,7 +191,7 @@ const handleKeyDown = (tecla,estado) => {
             if(indexLetra > 0){
                 indexLetra--;
                 const posicaoTabuleiro = (linhaAtual * 5) + indexLetra;
-                apagarLetra(posicaoTabuleiro);
+                apagarLetra(posicaoTabuleiro);// ver se precisa de tecla, button, objButtons
             }else{
                 showInfo(NOTIFICACAO_BACKSPACE_PALPITE_VAZIO);
             }
@@ -174,7 +200,7 @@ const handleKeyDown = (tecla,estado) => {
                 const palpiteGerado = montarPalpite(linhaAtual);
                 const obejto = contarInsidenciaLetras(palavraDaVez);
 
-                validarLetras(palpiteGerado, palavraDaVez, linhaAtual,obejto);
+                validarLetras(palpiteGerado, palavraDaVez, linhaAtual,obejto, objButtons);
 
                 if(palpiteGerado === palavraDaVez){
                     // alert("Parabéns! Você acertou!");
@@ -198,6 +224,54 @@ const handleKeyDown = (tecla,estado) => {
     return {linhaAtual, indexLetra, palavraDaVez}
 }
 
+const handleKeyAction = (tecla,estado, objButtons, button) => {
+    let {linhaAtual, indexLetra, palavraDaVez} = estado;
+
+    if(tecla.length === 1 && tecla >= "A" && tecla <= "Z"){
+        if(indexLetra < 5){
+            const posicaoTabuleiro = (linhaAtual * 5) + indexLetra;
+            adcionarLetra(tecla, posicaoTabuleiro, button, objButtons);
+            indexLetra++;
+        }else{
+            showInfo(NOTIFICACAO_LIMITE_LETRAS_POR_LINHA_ATINGIDO);
+        };
+    }else if(tecla === 'BACKSPACE'){
+        if(indexLetra > 0){
+            indexLetra--;
+            const posicaoTabuleiro = (linhaAtual * 5) + indexLetra;
+            apagarLetra(posicaoTabuleiro, tecla, button, objButtons);
+        }else{
+            showInfo(NOTIFICACAO_BACKSPACE_PALPITE_VAZIO);
+        };
+    }else if(tecla === 'ENTER'){
+        if(indexLetra === 5){
+            const palpiteGerado = montarPalpite(linhaAtual);
+            const obejto = contarInsidenciaLetras(palavraDaVez);
+
+            validarLetras(palpiteGerado, palavraDaVez, linhaAtual, obejto, objButtons);
+
+            if(palpiteGerado === palavraDaVez){
+                showSuccess(NOTIFICACAO_FIM_DE_JOGO_ACERTO);
+            }else{
+                linhaAtual++; 
+                indexLetra = 0;
+
+                if(linhaAtual === 6){
+                    showError(`Fim do jogo ! A palavra era: ${palavraDaVez}`)
+                };
+            };
+        }else{
+            showInfo(NOTIFICACAO_PALPITE_INCOMPLETO);
+        }
+    }else{
+        showInfo(NOTIFICACAO_TECLA_INVALIDA);
+    }
+    return {linhaAtual, indexLetra, palavraDaVez};
+}
+//usar objeto com chave-valor para guardar o butão respectivo a letra
+//butoes[tecla] = butão   a chave é a letra e o valor é o butão prescionado
+
+
 const NOTIFICACAO_TECLA_BACKSPACE_PRESSIONADA = 'Tecla Backspace pressionada'
 const NOTIFICACAO_TECLA_ENTER_PRESSIONADA = 'Tecla Enter pressionada'
 const NOTIFICACAO_TECLA_INVALIDA = 'Tecla pressionada inválida'
@@ -212,7 +286,6 @@ const NOTIFICACAO_LIMITE_TENTATIVAS_ATINGIDO = 'Limite máximo de tentativas ati
 const NOTIFICACAO_LIMITE_LETRAS_POR_LINHA_ATINGIDO = 'Limite máximo de letras por linha atingido'
 
 const NOTIFICACAO_FIM_DE_JOGO_ACERTO = 'Você acertou! Fim de jogo!'
-// const NOTIFICACAO_FIM_DE_JOGO_ERRO = `Fim do jogo ! A palavra era: ${palavraDaVez}`
 
 
 const init = async () => {
@@ -224,17 +297,36 @@ const init = async () => {
         palavraDaVez: randomlyWord(words).toLocaleUpperCase(),
     };
 
-    document.addEventListener('keydown', (event) => {
-        const tecla = event.key.toLocaleUpperCase() // pega qual foi a tecla prescionada
-        estadoAtual = handleKeyDown(tecla, estadoAtual)// ← chama e salva o estado novo
-    })
+    let buttons = {};
+
+    const keyboard = document.querySelector('.teclado');
+
+    document.addEventListener('keydown', handleAction);
+    keyboard.addEventListener('click', handleAction);
+
+    function handleAction(event) {
+
+        if(event.type === 'keydown'){
+            const tecla = event.key.toLocaleUpperCase();// pega qual foi a tecla prescionada
+            estadoAtual = handleKeyAction(tecla, estadoAtual, buttons);// ← chama e salva o estado novo
+        }
+
+        if(event.type === 'click'){
+            if(!event.target.value) return;
+
+            const tecla = event.target.value.toLocaleUpperCase();// pega qual foi a tecla prescionada
+            const button = event.target;
+            estadoAtual = handleKeyAction(tecla,estadoAtual, buttons, button);// ← chama e salva o estado novo
+        }
+    }
 }
 
 // Só inicializa no browser, nunca no Jest
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== 'undefined' && module.exports) {// atualizar handleKeyDown para handleKeyAction
     module.exports = { loadWords, randomlyWord, adcionarLetra, 
         apagarLetra, handleKeyDown, contarInsidenciaLetras, validarLetras, 
-        showSuccess, showError, showInfo};
+        showSuccess, showError, showInfo
+    };
 }else{
     init();
 }
