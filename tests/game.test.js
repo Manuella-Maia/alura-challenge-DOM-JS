@@ -18,7 +18,7 @@ beforeEach(() => {
     const script = require('../script.js');// não dispara fetch nem init()
     global.adcionarLetra = script.adcionarLetra;
     global.apagarLetra = script.apagarLetra;
-    global.handleKeyDown = script.handleKeyDown; 
+    global.handleKeyAction = script.handleKeyAction; 
 })
 
 describe('Adicionar letras nos quadrados', () => {
@@ -68,7 +68,7 @@ describe('Remover letra do quadrado', () => {
     })
 })
 
-describe('Simular teclado', () => {// corrgit logica de eventos para passar para handleKeyDown
+describe('Simular teclado', () => {// corrgit logica de eventos keydow e click atualizados
 
     test('deve exibir "A" no quadrado quando a tecla "a" for pressionada', () => {
         let estado = {

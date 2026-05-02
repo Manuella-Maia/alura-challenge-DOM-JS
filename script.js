@@ -176,53 +176,53 @@ const validarLetras = (palpite, palavraRandomica, linhaAtual, objetoDeInsidencia
 
 // --- Funções do Dom ---
 
-const handleKeyDown = (tecla,estado, objButtons) => {
-    let {linhaAtual, indexLetra, palavraDaVez} = estado;
+// const handleKeyDown = (tecla,estado, objButtons) => {
+//     let {linhaAtual, indexLetra, palavraDaVez} = estado;
 
-    if(tecla.length === 1 && tecla >= "A" && tecla <= "Z"){
-            if(indexLetra < 5){
-                const posicaoTabuleiro = (linhaAtual * 5) + indexLetra;
-                adcionarLetra(tecla,posicaoTabuleiro);
-                indexLetra++;
-            }else{
-                showInfo(NOTIFICACAO_LIMITE_LETRAS_POR_LINHA_ATINGIDO)
-            }
-        }else if(tecla === 'BACKSPACE'){// ação do butão de apagar === "APAGAR" ||
-            if(indexLetra > 0){
-                indexLetra--;
-                const posicaoTabuleiro = (linhaAtual * 5) + indexLetra;
-                apagarLetra(posicaoTabuleiro);// ver se precisa de tecla, button, objButtons
-            }else{
-                showInfo(NOTIFICACAO_BACKSPACE_PALPITE_VAZIO);
-            }
-        }else if(tecla === "ENTER"){
-            if(indexLetra === 5){
-                const palpiteGerado = montarPalpite(linhaAtual);
-                const obejto = contarInsidenciaLetras(palavraDaVez);
+//     if(tecla.length === 1 && tecla >= "A" && tecla <= "Z"){
+//             if(indexLetra < 5){
+//                 const posicaoTabuleiro = (linhaAtual * 5) + indexLetra;
+//                 adcionarLetra(tecla,posicaoTabuleiro);
+//                 indexLetra++;
+//             }else{
+//                 showInfo(NOTIFICACAO_LIMITE_LETRAS_POR_LINHA_ATINGIDO)
+//             }
+//         }else if(tecla === 'BACKSPACE'){// ação do butão de apagar === "APAGAR" ||
+//             if(indexLetra > 0){
+//                 indexLetra--;
+//                 const posicaoTabuleiro = (linhaAtual * 5) + indexLetra;
+//                 apagarLetra(posicaoTabuleiro);// ver se precisa de tecla, button, objButtons
+//             }else{
+//                 showInfo(NOTIFICACAO_BACKSPACE_PALPITE_VAZIO);
+//             }
+//         }else if(tecla === "ENTER"){
+//             if(indexLetra === 5){
+//                 const palpiteGerado = montarPalpite(linhaAtual);
+//                 const obejto = contarInsidenciaLetras(palavraDaVez);
 
-                validarLetras(palpiteGerado, palavraDaVez, linhaAtual,obejto, objButtons);
+//                 validarLetras(palpiteGerado, palavraDaVez, linhaAtual,obejto, objButtons);
 
-                if(palpiteGerado === palavraDaVez){
-                    // alert("Parabéns! Você acertou!");
-                    showSuccess(NOTIFICACAO_FIM_DE_JOGO_ACERTO)
-                }else{
-                    linhaAtual++; 
-                    indexLetra = 0;
+//                 if(palpiteGerado === palavraDaVez){
+//                     // alert("Parabéns! Você acertou!");
+//                     showSuccess(NOTIFICACAO_FIM_DE_JOGO_ACERTO)
+//                 }else{
+//                     linhaAtual++; 
+//                     indexLetra = 0;
 
-                    if(linhaAtual === 6){
-                        // alert(`Fim do jogo ! A palavra era: ${palavraDaVez}`);
-                        showError(`Fim do jogo ! A palavra era: ${palavraDaVez}`)
-                    }
-                }
-            }else{
-                showInfo(NOTIFICACAO_PALPITE_INCOMPLETO);
-            }
-        }else{
-            showInfo(NOTIFICACAO_TECLA_INVALIDA);
-        }
+//                     if(linhaAtual === 6){
+//                         // alert(`Fim do jogo ! A palavra era: ${palavraDaVez}`);
+//                         showError(`Fim do jogo ! A palavra era: ${palavraDaVez}`)
+//                     }
+//                 }
+//             }else{
+//                 showInfo(NOTIFICACAO_PALPITE_INCOMPLETO);
+//             }
+//         }else{
+//             showInfo(NOTIFICACAO_TECLA_INVALIDA);
+//         }
 
-    return {linhaAtual, indexLetra, palavraDaVez}
-}
+//     return {linhaAtual, indexLetra, palavraDaVez}
+// }
 
 const handleKeyAction = (tecla,estado, objButtons, button) => {
     let {linhaAtual, indexLetra, palavraDaVez} = estado;
@@ -268,8 +268,6 @@ const handleKeyAction = (tecla,estado, objButtons, button) => {
     }
     return {linhaAtual, indexLetra, palavraDaVez};
 }
-//usar objeto com chave-valor para guardar o butão respectivo a letra
-//butoes[tecla] = butão   a chave é a letra e o valor é o butão prescionado
 
 
 const NOTIFICACAO_TECLA_BACKSPACE_PRESSIONADA = 'Tecla Backspace pressionada'
@@ -308,7 +306,8 @@ const init = async () => {
 
         if(event.type === 'keydown'){
             const tecla = event.key.toLocaleUpperCase();// pega qual foi a tecla prescionada
-            estadoAtual = handleKeyAction(tecla, estadoAtual, buttons);// ← chama e salva o estado novo
+            const button = document.querySelector(`[value = ${tecla}]`);//relaciona a tecla prescionada com o butão respectivo
+            estadoAtual = handleKeyAction(tecla, estadoAtual, buttons, button);// ← chama e salva o estado novo
         }
 
         if(event.type === 'click'){
@@ -324,7 +323,7 @@ const init = async () => {
 // Só inicializa no browser, nunca no Jest
 if (typeof module !== 'undefined' && module.exports) {// atualizar handleKeyDown para handleKeyAction
     module.exports = { loadWords, randomlyWord, adcionarLetra, 
-        apagarLetra, handleKeyDown, contarInsidenciaLetras, validarLetras, 
+        apagarLetra, handleKeyAction, contarInsidenciaLetras, validarLetras, 
         showSuccess, showError, showInfo
     };
 }else{
