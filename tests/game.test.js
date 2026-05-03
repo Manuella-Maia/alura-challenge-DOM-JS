@@ -10,7 +10,7 @@ let dom;
 beforeEach(() => {
     jest.resetModules();// limpa as variaveis do script.js para cada teste começar
     
-    dom = new JSDOM(html);// cria o simulador com html
+    dom = new JSDOM(html);// cria o simulador com html / carrega os elementos do index.js
     global.document = dom.window.document;
     global.window = dom.window;
 
@@ -50,7 +50,7 @@ describe('Remover letra do quadrado', () => {
 
         adcionarLetra("S",posicao);
 
-        apagarLetra(posicao);
+        apagarLetra("S",posicao);
 
         expect(quadrado[posicao].textContent).toBe("");
     })
@@ -62,7 +62,7 @@ describe('Remover letra do quadrado', () => {
 
         adcionarLetra("S",posicao);
 
-        apagarLetra(-1);
+        apagarLetra("S",-1);
 
         expect(quadrado[posicao].textContent).toBe("S");// tem que ser diferente de um espaço vazio
     })
@@ -77,7 +77,7 @@ describe('Simular teclado', () => {// corrgit logica de eventos keydow e click a
             palavraDaVez: 'SABER',
         }
 
-        handleKeyDown("A", estado)
+        handleKeyAction("A", estado)
 
         const quadrado = document.querySelectorAll('.quadrado');
         
@@ -91,12 +91,37 @@ describe('Simular teclado', () => {// corrgit logica de eventos keydow e click a
             palavraDaVez: 'SABER',
         }
 
-        estado = handleKeyDown("B", estado)// encadeia os estados para o indexLetra aumentar/inteirar
-        estado = handleKeyDown("C", estado)
+        estado = handleKeyAction("B", estado)// encadeia os estados para o indexLetra aumentar/inteirar
+        estado = handleKeyAction("C", estado)
 
         const quadrado = document.querySelectorAll('.quadrado');
 
         expect(quadrado[0].textContent).toBe('B');
         expect(quadrado[1].textContent).toBe('C');
     })
+});
+
+describe('Mapeamento de teclas para elementos do teclado virtual', () => {
+    
+    test('deve salvar o elemento do botão no objButtons com a tecla como chave', () => {
+        const objButtons = {};
+        const tecla = "A"
+        const button = document.querySelector(`[value=${tecla}]`);
+
+        adcionarLetra(tecla, 0, button, objButtons);
+        
+        expect(objButtons[tecla]).toBe(button);
+    });
+
+    test('deve apagar o elemento do botão e a tecla no objButtons', () => {
+        const objButtons = {};
+        const tecla = "D";
+        const button = document.querySelector(`[value=${tecla}]`);
+
+        objButtons[tecla] = button;
+
+        apagarLetra(tecla, 0, button, objButtons);
+        
+        expect(objButtons[tecla]).toBeUndefined();
+    });
 });

@@ -81,7 +81,7 @@ const adcionarLetra = (tecla, posicao, button, objButtons) => {
     }
 };
 
-const apagarLetra = (posicao, tecla, button, objButtons) => {
+const apagarLetra = (tecla, posicao, button, objButtons) => {
     // if(posicao < 0) throw new Error('Possição inválida ! o index da letra deve ser maior que 0');
     if(posicao < 0) return;
 
@@ -138,13 +138,12 @@ const validarLetras = (palpite, palavraRandomica, linhaAtual, objetoDeInsidencia
         
         if(letraPalpite === palavraRandomica[i]){
             quadrado[posicaoNoDOM].classList.add('posicao-correta');
-            // console.log('letraPalpite:', letraPalpite);
-            // console.log('objButtons:', objButtons);
-            // console.log('elemento:', objButtons[letraPalpite]);
+
+            objetoDeInsidencia[letraPalpite]--;
+
             if(objButtons[letraPalpite]){
                 objButtons[letraPalpite].classList.add('posicao-correta');
             }
-            objetoDeInsidencia[letraPalpite]--;
             
         }
     }
@@ -159,10 +158,11 @@ const validarLetras = (palpite, palavraRandomica, linhaAtual, objetoDeInsidencia
        if(objetoDeInsidencia[letraPalpite] !== undefined && objetoDeInsidencia[letraPalpite] > 0){//corrigir para não pintar letras repetidas na mesma posição so se outver
             quadrado[posicaoNoDOM].classList.add('posicao-errada');
 
+            objetoDeInsidencia[letraPalpite]--;
+
             if(objButtons[letraPalpite]){
                 objButtons[letraPalpite].classList.add('posicao-errada');
             }
-            objetoDeInsidencia[letraPalpite]--;
 
         }else{
             quadrado[posicaoNoDOM].classList.add('letra-ausente');
@@ -175,54 +175,6 @@ const validarLetras = (palpite, palavraRandomica, linhaAtual, objetoDeInsidencia
 }
 
 // --- Funções do Dom ---
-
-// const handleKeyDown = (tecla,estado, objButtons) => {
-//     let {linhaAtual, indexLetra, palavraDaVez} = estado;
-
-//     if(tecla.length === 1 && tecla >= "A" && tecla <= "Z"){
-//             if(indexLetra < 5){
-//                 const posicaoTabuleiro = (linhaAtual * 5) + indexLetra;
-//                 adcionarLetra(tecla,posicaoTabuleiro);
-//                 indexLetra++;
-//             }else{
-//                 showInfo(NOTIFICACAO_LIMITE_LETRAS_POR_LINHA_ATINGIDO)
-//             }
-//         }else if(tecla === 'BACKSPACE'){// ação do butão de apagar === "APAGAR" ||
-//             if(indexLetra > 0){
-//                 indexLetra--;
-//                 const posicaoTabuleiro = (linhaAtual * 5) + indexLetra;
-//                 apagarLetra(posicaoTabuleiro);// ver se precisa de tecla, button, objButtons
-//             }else{
-//                 showInfo(NOTIFICACAO_BACKSPACE_PALPITE_VAZIO);
-//             }
-//         }else if(tecla === "ENTER"){
-//             if(indexLetra === 5){
-//                 const palpiteGerado = montarPalpite(linhaAtual);
-//                 const obejto = contarInsidenciaLetras(palavraDaVez);
-
-//                 validarLetras(palpiteGerado, palavraDaVez, linhaAtual,obejto, objButtons);
-
-//                 if(palpiteGerado === palavraDaVez){
-//                     // alert("Parabéns! Você acertou!");
-//                     showSuccess(NOTIFICACAO_FIM_DE_JOGO_ACERTO)
-//                 }else{
-//                     linhaAtual++; 
-//                     indexLetra = 0;
-
-//                     if(linhaAtual === 6){
-//                         // alert(`Fim do jogo ! A palavra era: ${palavraDaVez}`);
-//                         showError(`Fim do jogo ! A palavra era: ${palavraDaVez}`)
-//                     }
-//                 }
-//             }else{
-//                 showInfo(NOTIFICACAO_PALPITE_INCOMPLETO);
-//             }
-//         }else{
-//             showInfo(NOTIFICACAO_TECLA_INVALIDA);
-//         }
-
-//     return {linhaAtual, indexLetra, palavraDaVez}
-// }
 
 const handleKeyAction = (tecla,estado, objButtons, button) => {
     let {linhaAtual, indexLetra, palavraDaVez} = estado;
@@ -239,7 +191,7 @@ const handleKeyAction = (tecla,estado, objButtons, button) => {
         if(indexLetra > 0){
             indexLetra--;
             const posicaoTabuleiro = (linhaAtual * 5) + indexLetra;
-            apagarLetra(posicaoTabuleiro, tecla, button, objButtons);
+            apagarLetra(tecla, posicaoTabuleiro, button, objButtons);
         }else{
             showInfo(NOTIFICACAO_BACKSPACE_PALPITE_VAZIO);
         };
