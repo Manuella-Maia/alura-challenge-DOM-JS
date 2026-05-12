@@ -177,7 +177,9 @@ const validarLetras = (palpite, palavraRandomica, linhaAtual, objetoDeInsidencia
 // --- Funções do Dom ---
 
 const handleKeyAction = (tecla,estado, objButtons, button) => {
-    let {linhaAtual, indexLetra, palavraDaVez} = estado;
+    let {linhaAtual, indexLetra, palavraDaVez, jogoEncerrado} = estado;
+
+    if(estado.jogoEncerrado) return estado;
 
     if(tecla.length === 1 && tecla >= "A" && tecla <= "Z"){
         if(indexLetra < 5){
@@ -194,7 +196,7 @@ const handleKeyAction = (tecla,estado, objButtons, button) => {
             apagarLetra(tecla, posicaoTabuleiro, button, objButtons);
         }else{
             showInfo(NOTIFICACAO_BACKSPACE_PALPITE_VAZIO);
-        };
+        }
     }else if(tecla === 'ENTER'){
         if(indexLetra === 5){
             const palpiteGerado = montarPalpite(linhaAtual);
@@ -204,12 +206,16 @@ const handleKeyAction = (tecla,estado, objButtons, button) => {
 
             if(palpiteGerado === palavraDaVez){
                 showSuccess(NOTIFICACAO_FIM_DE_JOGO_ACERTO);
+                document.querySelector('.areaButãoReset').classList.add('visible');
+                jogoEncerrado = true;
             }else{
                 linhaAtual++; 
                 indexLetra = 0;
 
                 if(linhaAtual === 6){
-                    showError(`Fim do jogo ! A palavra era: ${palavraDaVez}`)
+                    showError(`Fim do jogo ! A palavra era: ${palavraDaVez}`);
+                    document.querySelector('.areaButãoReset').classList.add('visible');
+                    jogoEncerrado = true;
                 };
             };
         }else{
@@ -218,7 +224,7 @@ const handleKeyAction = (tecla,estado, objButtons, button) => {
     }else{
         showInfo(NOTIFICACAO_TECLA_INVALIDA);
     }
-    return {linhaAtual, indexLetra, palavraDaVez};
+    return {linhaAtual, indexLetra, palavraDaVez, jogoEncerrado};
 }
 
 
@@ -245,14 +251,18 @@ const init = async () => {
         linhaAtual: 0,
         indexLetra: 0,
         palavraDaVez: randomlyWord(words).toLocaleUpperCase(),
-    };
+        jogoEncerrado: false,
+    }
 
     let buttons = {};
 
     const keyboard = document.querySelector('.teclado');
+    const btnReset = document.querySelector('.bntReset');
 
     document.addEventListener('keydown', handleAction);
     keyboard.addEventListener('click', handleAction);
+    btnReset.addEventListener('click', manipulateActionReset);
+
 
     function handleAction(event) {
 
@@ -269,6 +279,10 @@ const init = async () => {
             const button = event.target;
             estadoAtual = handleKeyAction(tecla,estadoAtual, buttons, button);// ← chama e salva o estado novo
         }
+    }
+
+    function manipulateActionReset(){
+        location.reload();
     }
 }
 

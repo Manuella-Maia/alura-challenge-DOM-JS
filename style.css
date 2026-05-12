@@ -105,6 +105,30 @@ header{
     width: 100%;
 }
 
+.areaButãoReset{
+    display: none;
+}
+
+.areaButãoReset.visible{
+    display: block;
+} 
+
+.bntReset{
+    width: 210px;
+    height: 48px;
+    border-radius: 10px;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    
+    background-color: #F9FF00;
+    color:#14161C;
+    font-weight: 700;
+    font-weight: bold;
+    font-size: 16px;
+
+
+}
+
 .posicao-correta{background-color: #538D4E; color: white;}
 
 .posicao-errada{background-color: #B59F3B; color:white;}
