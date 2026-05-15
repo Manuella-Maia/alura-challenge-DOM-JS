@@ -46,7 +46,7 @@ Exportar: module.exports = { loadWords, randomlyWord };
 Importar: const { loadWords, randomlyWord } = require('../script.js');
 
 # Rodar apenas testes de sorteio
-npx jest tests/randomly-one-Word.test.js
+npx jest tests/randomly-word.test.js
 
 # Rodar apenas testes de API
 npx jest tests/load-words.test.js
@@ -71,3 +71,7 @@ npx jest --coverage
 
 # Rodar todos os testes
 npx jest
+
+imagem que demostra erro no evento do keydown e do clik
+deveria adcionar a classe nos butoes, mesmo no evento keydon
+![alt text](image.png)

@@ -35,8 +35,3 @@ describe('Teste da função randomlyWord', () => {
     });
 });
 
-# Rodar apenas testes de sorteio
-npx jest tests/wordSelection.test.js
-
-# Rodar apenas testes de API
-npx jest tests/apiAccess.test.js

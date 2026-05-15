@@ -97,8 +97,7 @@ const montarPalpite = (linhaAtual) => {
     const quadrado = document.querySelectorAll('.quadrado');
     let palpite = "";
     let inicioDaLinha = linhaAtual * 5;
-    //aqui entra a logica de descobrir os butoes clicados !
-
+    
     // O loop começa no primeiro quadrado da linha
     // E vai até o quinto quadrado dessa mesma linha
     for(let i = 0; i < 5; i++){
@@ -226,7 +225,6 @@ const handleKeyAction = (tecla,estado, objButtons, button) => {
     }
     return {linhaAtual, indexLetra, palavraDaVez, jogoEncerrado};
 }
-
 
 const NOTIFICACAO_TECLA_BACKSPACE_PRESSIONADA = 'Tecla Backspace pressionada'
 const NOTIFICACAO_TECLA_ENTER_PRESSIONADA = 'Tecla Enter pressionada'

@@ -19,6 +19,7 @@ beforeEach(() => {
     global.adcionarLetra = script.adcionarLetra;
     global.apagarLetra = script.apagarLetra;
     global.handleKeyAction = script.handleKeyAction; 
+    global.Toastify = () => ({showToast: () => {}})
 })
 
 describe('Adicionar letras nos quadrados', () => {
@@ -125,3 +126,55 @@ describe('Mapeamento de teclas para elementos do teclado virtual', () => {
         expect(objButtons[tecla]).toBeUndefined();
     });
 });
+
+describe('Verificar encerramento do jogo', () => {
+    test('deve encerrar o jogo e exibir o botão de reset quando o palpite for correto', () => {
+        const quadrado = document.querySelectorAll('.quadrado');
+        const areaBtnReset = document.querySelector('.areaButãoReset');
+        
+        const estado = {
+            linhaAtual: 0,
+            indexLetra: 5,
+            palavraDaVez: 'CASAR',
+            jogoEncerrado: false,
+        }
+
+        adcionarLetra('C',0);
+        adcionarLetra('A',1);
+        adcionarLetra('S',2);
+        adcionarLetra('A',3);
+        adcionarLetra('R',4);
+
+        const tecla = "ENTER";
+
+        const novoEstado = handleKeyAction(tecla, estado, {});
+
+        expect(novoEstado.jogoEncerrado).toBe(true);
+        expect(areaBtnReset.classList.contains('visible')).toBe(true);
+    })
+
+    test('deve encerrar o jogo e exibir o butão de reset quando o palpite for incorreto e quando estiver na ultima tentativa/linha', () => {
+        const quadrado = document.querySelectorAll('.quadrado');
+        const areaBtnReset = document.querySelector('.areaButãoReset');
+        
+        const estado = {
+            linhaAtual: 5,
+            indexLetra: 5,
+            palavraDaVez: 'CASAR',
+            jogoEncerrado: false,
+        }
+
+        adcionarLetra('L',0);
+        adcionarLetra('I',1);
+        adcionarLetra('V',2);
+        adcionarLetra('R',3);
+        adcionarLetra('O',4);
+
+        const tecla = "ENTER";
+
+        const novoEstado = handleKeyAction(tecla, estado, {});
+
+        expect(novoEstado.jogoEncerrado).toBe(true);
+        expect(areaBtnReset.classList.contains('visible')).toBe(true);
+    })
+})
