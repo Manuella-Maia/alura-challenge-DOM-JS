@@ -13,7 +13,7 @@ beforeEach(() => {
     global.document = dom.window.document;
     global.window = dom.window;
 
-    const script = require('../script.js');
+    const script = require('../resources/script/app.js');
     global.validarLetras = script.validarLetras;
     global.contarInsidenciaLetras = script.contarInsidenciaLetras;
 });

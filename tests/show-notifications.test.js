@@ -5,7 +5,7 @@
 // Toastify({...})  →  retorna um objeto
 // .showToast() →  esse objeto tem o método showToast
 
-const {showSuccess, showInfo, showError} = require('../script.js');
+const {showSuccess, showInfo, showError} = require('../resources/script/app.js');
 
 // --- Mock do Toastify ---
 

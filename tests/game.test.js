@@ -15,7 +15,7 @@ beforeEach(() => {
     global.window = dom.window;
 
     
-    const script = require('../script.js');// não dispara fetch nem init()
+    const script = require('../resources/script/app.js');// não dispara fetch nem init()
     global.adcionarLetra = script.adcionarLetra;
     global.apagarLetra = script.apagarLetra;
     global.handleKeyAction = script.handleKeyAction; 
@@ -130,7 +130,7 @@ describe('Mapeamento de teclas para elementos do teclado virtual', () => {
 describe('Verificar encerramento do jogo', () => {
     test('deve encerrar o jogo e exibir o botão de reset quando o palpite for correto', () => {
         const quadrado = document.querySelectorAll('.quadrado');
-        const areaBtnReset = document.querySelector('.areaButãoReset');
+        const areaBtnReset = document.querySelector('.area-butao-reset');
         
         const estado = {
             linhaAtual: 0,
@@ -155,7 +155,7 @@ describe('Verificar encerramento do jogo', () => {
 
     test('deve encerrar o jogo e exibir o butão de reset quando o palpite for incorreto e quando estiver na ultima tentativa/linha', () => {
         const quadrado = document.querySelectorAll('.quadrado');
-        const areaBtnReset = document.querySelector('.areaButãoReset');
+        const areaBtnReset = document.querySelector('.area-butao-reset');
         
         const estado = {
             linhaAtual: 5,

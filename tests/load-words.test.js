@@ -6,7 +6,7 @@ global.fetch = jest.fn(() =>
     })
 );
 
-const { loadWords } = require('../script.js');
+const { loadWords } = require('../resources/script/app.js');
 
 
 describe('Teste da função loadWords', () => {

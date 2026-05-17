@@ -1,4 +1,4 @@
-const { randomlyWord } = require('../script.js');
+const { randomlyWord } = require('../resources/script/app.js');
 
 describe('Pegar uma palavra aleatória', () => {
 
@@ -39,5 +39,4 @@ describe('Pegar uma palavra aleatória', () => {
        jest.spyOn(global.Math, 'random').mockReturnValue(0.7);
        expect(randomlyWord(['TESTE', 'SABER','LOGAR', 'COMER'])).toBe('LOGAR')
     })
-
 });

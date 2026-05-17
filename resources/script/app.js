@@ -1,7 +1,19 @@
+const NOTIFICACAO_TECLA_INVALIDA = 'Tecla pressionada inválida';
+
+const NOTIFICACAO_BACKSPACE_PALPITE_VAZIO = 'Não é possível apagar um palpite vazio';
+
+const NOTIFICACAO_PALPITE_VAZIO = 'Palpite vazio';
+const NOTIFICACAO_PALPITE_INCOMPLETO = 'Palpite incompleto';
+
+const NOTIFICACAO_LIMITE_TENTATIVAS_ATINGIDO = 'Limite máximo de tentativas atingido';
+const NOTIFICACAO_LIMITE_LETRAS_POR_LINHA_ATINGIDO = 'Limite máximo de letras por linha atingido';
+
+const NOTIFICACAO_FIM_DE_JOGO_ACERTO = 'Você acertou! Fim de jogo!';
+
 //--- Fetch API: leitura do arquivo json e retorno do array de palavras ---
 const loadWords = async () => {
     try {
-        const req = await fetch('./json/dataWords.json')
+        const req = await fetch('./resources/assets/json/dataWords.json')
 
         if(!req.ok) throw new Error('Erro ao acessar API de palavras')
         
@@ -76,7 +88,7 @@ const adcionarLetra = (tecla, posicao, button, objButtons) => {
     const quadrado = document.querySelectorAll('.quadrado');
     quadrado[posicao].textContent = tecla;
 
-    if(button != null && button != undefined){
+    if(button != null){
         objButtons[tecla] = button;
     }
 };
@@ -205,7 +217,7 @@ const handleKeyAction = (tecla,estado, objButtons, button) => {
 
             if(palpiteGerado === palavraDaVez){
                 showSuccess(NOTIFICACAO_FIM_DE_JOGO_ACERTO);
-                document.querySelector('.areaButãoReset').classList.add('visible');
+                document.querySelector('.area-butao-reset').classList.add('visible');
                 jogoEncerrado = true;
             }else{
                 linhaAtual++; 
@@ -213,7 +225,7 @@ const handleKeyAction = (tecla,estado, objButtons, button) => {
 
                 if(linhaAtual === 6){
                     showError(`Fim do jogo ! A palavra era: ${palavraDaVez}`);
-                    document.querySelector('.areaButãoReset').classList.add('visible');
+                    document.querySelector('.area-butao-reset').classList.add('visible');
                     jogoEncerrado = true;
                 };
             };
@@ -225,22 +237,6 @@ const handleKeyAction = (tecla,estado, objButtons, button) => {
     }
     return {linhaAtual, indexLetra, palavraDaVez, jogoEncerrado};
 }
-
-const NOTIFICACAO_TECLA_BACKSPACE_PRESSIONADA = 'Tecla Backspace pressionada'
-const NOTIFICACAO_TECLA_ENTER_PRESSIONADA = 'Tecla Enter pressionada'
-const NOTIFICACAO_TECLA_INVALIDA = 'Tecla pressionada inválida'
-
-const NOTIFICACAO_BACKSPACE_PALPITE_VAZIO = 'Não é possível apagar um palpite vazio'
-
-const NOTIFICACAO_PALPITE_VAZIO = 'Palpite vazio'
-const NOTIFICACAO_PALPITE_INCOMPLETO = 'Palpite incompleto'
-
-
-const NOTIFICACAO_LIMITE_TENTATIVAS_ATINGIDO = 'Limite máximo de tentativas atingido'
-const NOTIFICACAO_LIMITE_LETRAS_POR_LINHA_ATINGIDO = 'Limite máximo de letras por linha atingido'
-
-const NOTIFICACAO_FIM_DE_JOGO_ACERTO = 'Você acertou! Fim de jogo!'
-
 
 const init = async () => {
     const words = await loadWords();
