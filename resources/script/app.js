@@ -153,6 +153,8 @@ const validarLetras = (palpite, palavraRandomica, linhaAtual, objetoDeInsidencia
             objetoDeInsidencia[letraPalpite]--;
 
             if(objButtons[letraPalpite]){
+                objButtons[letraPalpite].classList.remove('posicao-errada');
+                objButtons[letraPalpite].classList.remove('letra-ausente');
                 objButtons[letraPalpite].classList.add('posicao-correta');
             }
             
@@ -171,14 +173,14 @@ const validarLetras = (palpite, palavraRandomica, linhaAtual, objetoDeInsidencia
 
             objetoDeInsidencia[letraPalpite]--;
 
-            if(objButtons[letraPalpite]){
+            if(objButtons[letraPalpite] && !objButtons[letraPalpite].classList.contains('posicao-correta')){
                 objButtons[letraPalpite].classList.add('posicao-errada');
             }
 
         }else{
             quadrado[posicaoNoDOM].classList.add('letra-ausente');
 
-            if(objButtons[letraPalpite]){
+            if(objButtons[letraPalpite] && !objButtons[letraPalpite].classList.contains('posicao-correta')){
                 objButtons[letraPalpite].classList.add('letra-ausente');
             }
         }
@@ -244,7 +246,7 @@ const init = async () => {
     let estadoAtual = {
         linhaAtual: 0,
         indexLetra: 0,
-        palavraDaVez: randomlyWord(words).toLocaleUpperCase(),
+        palavraDaVez: "FOLHA",
         jogoEncerrado: false,
     }
 

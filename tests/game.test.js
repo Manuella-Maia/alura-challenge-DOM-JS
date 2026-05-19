@@ -19,7 +19,7 @@ beforeEach(() => {
     global.adcionarLetra = script.adcionarLetra;
     global.apagarLetra = script.apagarLetra;
     global.handleKeyAction = script.handleKeyAction; 
-    global.Toastify = () => ({showToast: () => {}})
+    global.Toastify = () => ({showToast: () => {}});
 })
 
 describe('Adicionar letras nos quadrados', () => {
