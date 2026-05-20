@@ -4,6 +4,17 @@ const fs = require('fs')
 
 const html = fs.readFileSync(path.resolve(__dirname, '../index.html'), 'utf8');
 
+const makeButon = () => {//retorna um objeto que simula um button do DOM
+    const classes = new Set();//acumula classes igual ao classList do DOM
+    return {
+        classList: {
+            add: jest.fn((cls) => classes.add(cls)),
+            remove: jest.fn((cls) => classes.delete(cls)),
+            contains: jest.fn((cls) => classes.has(cls))//verifica se a classe existe no button
+        }
+    };
+};
+
 let dom;
 
 beforeEach(() => {
@@ -89,7 +100,7 @@ describe('Definir cor da letra do palpite (quadrados)', () => {
 
         expect(quadrado[posicao].classList.contains('letra-ausente')).toBe(true);// classlist é um metodo de objeto
     });  
-})
+});
 
 describe('Definir cor dos butons do teclado virtual', () => {
     test('deve adcionar a classe posicao-correta no button', () => {
@@ -101,13 +112,13 @@ describe('Definir cor dos butons do teclado virtual', () => {
         const objetoDeInsidencia = {"S": 1,"A": 1,"B": 1,"E": 1,"R": 1};
 
         const objButtons = {
-            "C": {classList: {add: jest.fn()}},
-            "A": {classList: {add: jest.fn()}}
+            "C": makeButon(),
+            "A": makeButon()
         }
 
         validarLetras(palpite, wordRandom, linhaAtual, objetoDeInsidencia, objButtons);
 
-        expect(objButtons["A"].classList.add).toHaveBeenCalledWith('posicao-correta');// verifica se a função add foi chamada com o argumento 'posicao-correta'
+        expect(objButtons["A"].classList.contains('posicao-correta')).toBe(true);// verifica se a classe existe no button
     });
 
     test('deve adcionar a classe posicao-errada no button', () => {
@@ -119,13 +130,13 @@ describe('Definir cor dos butons do teclado virtual', () => {
         const objetoDeInsidencia = {"S": 1,"A": 1,"B": 1,"E": 1,"R": 1};
 
         const objButtons = {
-            "A": {classList: {add: jest.fn()}},
-            "R": {classList: {add: jest.fn()}}
+            "A": makeButon(),
+            "R": makeButon()
         }
 
         validarLetras(palpite, wordRandom, linhaAtual, objetoDeInsidencia, objButtons);
 
-        expect(objButtons["R"].classList.add).toHaveBeenCalledWith('posicao-errada');// verifica se a função add foi chamada com o argumento 'posicao-correta'
+        expect(objButtons["R"].classList.contains('posicao-errada')).toBe(true);
     });
 
     test('deve adcionar a classe letra-ausente no button', () => {
@@ -137,16 +148,16 @@ describe('Definir cor dos butons do teclado virtual', () => {
         const objetoDeInsidencia = {"S": 1,"A": 1,"B": 1,"E": 1,"R": 1};
 
         const objButtons = {
-            "R": {classList: {add: jest.fn()}},
-            "O": {classList: {add: jest.fn()}}
+            "R": makeButon(),
+            "O": makeButon()
         }
 
         validarLetras(palpite, wordRandom, linhaAtual, objetoDeInsidencia, objButtons);
 
-        expect(objButtons["O"].classList.add).toHaveBeenCalledWith('letra-ausente');// verifica se a função add foi chamada com o argumento 'posicao-correta'
+        expect(objButtons["O"].classList.contains('letra-ausente')).toBe(true);
     });
 
-    test.only('deve atualizar a cor da primeira tentativa (posicao errada) quando a proxima for posicao correta', () => {
+    test('deve atualizar a cor da primeira tentativa (posicao errada) quando a proxima for posicao correta', () => {
         const quadrado = document.querySelectorAll('.quadrado');
 
         const wordRandom = "FOLHA";
@@ -155,13 +166,11 @@ describe('Definir cor dos butons do teclado virtual', () => {
         let objetoDeInsidencia = {"F": 1,"O": 1,"L": 1,"H": 1,"A": 1};
 
         let objButtons = {
-            "F": {classList: {add: jest.fn()}},
-            "A": {classList: {add: jest.fn()}}
+            "F": makeButon(),
+            "A": makeButon()
         }
 
         validarLetras(primeiroPalpite, wordRandom, linhaAtual, objetoDeInsidencia, objButtons);
-
-        expect(objButtons["A"].classList.add).toHaveBeenCalledWith('posicao-errada');
 
         const segundoPalpite = "TENTA";
         linhaAtual = 1;
@@ -169,9 +178,8 @@ describe('Definir cor dos butons do teclado virtual', () => {
         
         validarLetras(segundoPalpite, wordRandom, linhaAtual, objetoDeInsidencia, objButtons);
 
-        console.log(objButtons["A"].classList.add.mock.calls);
-
-        expect(objButtons["A"].classList.add).toHaveBeenCalledWith('posicao-correta');
+        expect(objButtons["A"].classList.contains('posicao-errada')).toBe(false)
+        expect(objButtons["A"].classList.contains('posicao-correta')).toBe(true)
     });
 
     test('não deve sobreescrever classes diferentes de (posicao-correta) no butão quando a letra não estiver na posicão correta', () => {
@@ -183,13 +191,11 @@ describe('Definir cor dos butons do teclado virtual', () => {
         let objetoDeInsidencia = {"P": 1,"I": 1,"A": 1,"N": 1,"O": 1};
 
         let objButtons = {
-            "L": {classList: {add: jest.fn()}},
-            "O": {classList: {add: jest.fn()}}
+            "L": makeButon(),
+            "O": makeButon()
         }
 
         validarLetras(primeiroPalpite, wordRandom, linhaAtual, objetoDeInsidencia, objButtons);
-
-        expect(objButtons["O"].classList.add).toHaveBeenCalledWith('posicao-correta');
 
         const segundoPalpite = "FOLHA";
         linhaAtual = 1;
@@ -197,6 +203,7 @@ describe('Definir cor dos butons do teclado virtual', () => {
         
         validarLetras(segundoPalpite, wordRandom, linhaAtual, objetoDeInsidencia, objButtons);
 
-        expect(objButtons["O"].classList.add).not.toHaveBeenCalledWith('posicao-errada');
+        expect(objButtons["O"].classList.contains('posicao-errada')).toBe(false);
+        expect(objButtons["O"].classList.contains('posicao-correta')).toBe(true);
     });
-})
+});

@@ -246,7 +246,7 @@ const init = async () => {
     let estadoAtual = {
         linhaAtual: 0,
         indexLetra: 0,
-        palavraDaVez: "FOLHA",
+        palavraDaVez: randomlyWord(words).toLocaleUpperCase(),
         jogoEncerrado: false,
     }
 

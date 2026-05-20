@@ -117,7 +117,29 @@ Se uma letra for marcada como **amarela** (posição errada) em uma tentativa e 
 
 Atualmente o teclado não sobrescreve a cor anterior, então a letra fica amarela mesmo quando já foi confirmada na posição correta.
 
-Realizar verificação em validarpalpite
-para não sobreescrever uma classe depois de posicao-correta ser adcionada.
+Problema identificado
 
-Verificar o problema do teste passar.
+O classList do DOM acumula classes sem remover as anteriores. Após dois palpites, o botão ficava com as duas classes simultaneamente:
+['posicao-errada', 'posicao-correta']
+
+Por que o amarelo vencia ? 
+
+Quando um elemento tem duas classes conflitantes na mesma propriedade (background-color), o CSS aplica a que foi declarada por último no arquivo. Como posicao-errada estava declarada depois de posicao-correta no style.css, o amarelo sobrescrevia o verde — não por especificidade, mas por ordem de cascata.
+
+Correção em validarLetras:
+
+No loop de letras verdes, antes de adicionar posicao-correta ao botão, as classes anteriores são removidas:
+
+javascriptobjButtons[letraPalpite].classList.remove('posicao-errada');
+objButtons[letraPalpite].classList.remove('letra-ausente');
+objButtons[letraPalpite].classList.add('posicao-correta');
+
+Nos loops de amarelo e cinza, uma guarda impede sobrescrever um botão já verde:
+
+javascriptif(objButtons[letraPalpite] && !objButtons[letraPalpite].classList.contains('posicao-correta'))
+
+Por que o teste passava mesmo com o bug ? 
+
+O mock original só tinha add: jest.fn(). O toHaveBeenCalledWith('posicao-correta') verificava se a chamada existiu em algum momento no histórico — e existia — mas não verificava o estado final do botão. As duas classes estavam acumuladas e o teste não sabia disso.
+
+A solução foi criar um mock com Set nativo para simular o estado real do classList, permitindo verificar com contains se a classe correta estava presente e a incorreta havia sido removida.
