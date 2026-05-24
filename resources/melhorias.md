@@ -20,33 +20,6 @@ As letras do teclado estão hardcoded no HTML.
 
 ## CSS
 
-### Reset incompleto
-
-```css
-* {
-    margin: 0;
-    padding: 0;
-}
-```
-
-Funciona, mas é básico.
-
-**Conceito: CSS Reset vs Normalize**
-- **Reset** — zera tudo, parte do zero
-- **Normalize** — padroniza entre browsers sem zerar
-
-O mais usado hoje é adicionar também o `box-sizing: border-box`, que faz o `padding` e `border` serem incluídos no tamanho do elemento em vez de aumentá-lo:
-
-```css
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-```
-
----
-
 ### Responsividade ausente
 
 O layout quebra em telas menores.
@@ -62,18 +35,6 @@ O layout quebra em telas menores.
 ---
 
 ## JavaScript
-
-### querySelectorAll repetido dentro das funções
-
-```js
-const quadrado = document.querySelectorAll('.quadrado');
-```
-
-Essa linha é chamada dentro de `adcionarLetra`, `apagarLetra`, `montarPalpite` e `validarLetras`.
-
-**Conceito: cache de elementos DOM** — buscar elementos do DOM tem custo de performance. O ideal é buscar uma vez no `init()` e passar como parâmetro ou guardar numa variável compartilhada.
-
----
 
 ### contarInsidenciaLetras pode usar reduce
 
@@ -99,19 +60,14 @@ const contarInsidenciaLetras = palavraRandomica.split('').reduce((objetoDeInside
 
 ---
 
-### Manipulação de DOM dentro de handleKeyAction
 
-```js
-document.querySelector('.areaButãoReset').classList.add('visible');
-```
 
-A lógica de jogo e a manipulação de DOM estão misturadas na mesma função.
 
-**Conceito: separação de responsabilidades** — o `handleKeyAction` deveria apenas retornar o estado. Quem cuida do DOM deveria ser outra função, como o `handleAction` dentro do `init()`.
 
----
 
-## Bug — atualização de cor do teclado
+
+
+## resolvido Bug — atualização de cor do teclado
 
 Se uma letra for marcada como **amarela** (posição errada) em uma tentativa e na tentativa seguinte aparecer na **posição correta**, o botão do teclado deve ser atualizado de amarelo para **verde**.
 
@@ -143,3 +99,21 @@ Por que o teste passava mesmo com o bug ?
 O mock original só tinha add: jest.fn(). O toHaveBeenCalledWith('posicao-correta') verificava se a chamada existiu em algum momento no histórico — e existia — mas não verificava o estado final do botão. As duas classes estavam acumuladas e o teste não sabia disso.
 
 A solução foi criar um mock com Set nativo para simular o estado real do classList, permitindo verificar com contains se a classe correta estava presente e a incorreta havia sido removida.
+
+
+## Resolver problema testes
+
+game.test.js -> refatorar todos
+
+letter-status.test.js:
+
+Definir cor da letra do palpite (quadrados)
+    × deve adicionar a classe posicao-correta no quadrado quando a letra coincidir (48 ms)
+    × deve adicionar a classe posicao-errada no quadrado quando a letra estiver na posição errada (46 ms)
+    × deve adicionar a classe letra-ausente no quadrado quando a letra não existir na palavra sorteada (43 ms)
+  Definir cor dos butons do teclado virtual
+    × deve adcionar a classe posicao-correta no button (43 ms)
+    × deve adcionar a classe posicao-errada no button (42 ms)
+    × deve adcionar a classe letra-ausente no button (58 ms)
+    × deve atualizar a cor da primeira tentativa (posicao errada) quando a proxima for posicao correta (44 ms)
+    × não deve sobreescrever classes diferentes de (posicao-correta) no butão quando a letra não estiver na posicão correta (42 ms)

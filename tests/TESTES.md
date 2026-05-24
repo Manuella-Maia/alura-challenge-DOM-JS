@@ -71,7 +71,3 @@ npx jest --coverage
 
 # Rodar todos os testes
 npx jest
-
-imagem que demostra erro no evento do keydown e do clik
-deveria adcionar a classe nos butoes, mesmo no evento keydon
-![alt text](image.png)
