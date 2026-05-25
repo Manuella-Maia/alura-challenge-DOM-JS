@@ -1,6 +1,6 @@
 const { JSDOM } = require('jsdom');
 const path = require('path');
-const fs = require('fs')
+const fs = require('fs');
 
 const html = fs.readFileSync(path.resolve(__dirname, '../index.html'), 'utf8');
 
@@ -13,7 +13,14 @@ const makeButon = () => {//retorna um objeto que simula um button do DOM
             contains: jest.fn((cls) => classes.has(cls))//verifica se a classe existe no button
         }
     };
-};
+}
+
+const elementsFake = () => ({
+    quadrado: document.querySelectorAll('.quadrado'),
+    teclado: document.querySelector('.teclado'),
+    btnReset: document.querySelector('.bntReset'),
+    areaReset: document.querySelector('.area-butao-reset')
+})
 
 let dom;
 
@@ -27,7 +34,7 @@ beforeEach(() => {
     const script = require('../resources/script/app.js');
     global.validarLetras = script.validarLetras;
     global.contarInsidenciaLetras = script.contarInsidenciaLetras;
-});
+})
 
 describe('Montar objeto de insidencia de letras', () => {
 
@@ -55,12 +62,12 @@ describe('Montar objeto de insidencia de letras', () => {
 
         expect(result).toEqual({});
     });
-});
+})
 
 describe('Definir cor da letra do palpite (quadrados)', () => {
 
     test('deve adicionar a classe posicao-correta no quadrado quando a letra coincidir', () => {
-        const quadrado = document.querySelectorAll('.quadrado');
+        const { quadrado } = elementsFake();
 
         const wordRandom = "SABER";
         const palpite = "CARRO"
@@ -68,13 +75,13 @@ describe('Definir cor da letra do palpite (quadrados)', () => {
         const objetoDeInsidencia = {"S": 1,"A": 1,"B": 1,"E": 1,"R": 1};
         const posicao = 16; //posicao = (3 * 5) + 1 = 16
 
-        validarLetras(palpite, wordRandom, linhaAtual, objetoDeInsidencia,{});
+        validarLetras(palpite, wordRandom, linhaAtual, objetoDeInsidencia,{}, quadrado);
 
-        expect(quadrado[posicao].classList.contains('posicao-correta')).toBe(true);// classlist é um metodo de objeto
-    });
+        expect(quadrado[posicao].classList.contains('posicao-correta')).toBe(true);
+    })
 
     test('deve adicionar a classe posicao-errada no quadrado quando a letra estiver na posição errada', () => {
-        const quadrado = document.querySelectorAll('.quadrado');
+        const { quadrado } = elementsFake();
 
         const wordRandom = "SABER";
         const palpite = "CARRO"
@@ -82,13 +89,13 @@ describe('Definir cor da letra do palpite (quadrados)', () => {
         const objetoDeInsidencia = {"S": 1,"A": 1,"B": 1,"E": 1,"R": 1};
         const posicao = 17; //posicao = (3 * 5) + 2 = 17
 
-        validarLetras(palpite, wordRandom, linhaAtual, objetoDeInsidencia, {});
+        validarLetras(palpite, wordRandom, linhaAtual, objetoDeInsidencia, {}, quadrado);
 
-        expect(quadrado[posicao].classList.contains('posicao-errada')).toBe(true);// classlist é um metodo de objeto
-    });
+        expect(quadrado[posicao].classList.contains('posicao-errada')).toBe(true);
+    })
 
     test('deve adicionar a classe letra-ausente no quadrado quando a letra não existir na palavra sorteada', () => {
-        const quadrado = document.querySelectorAll('.quadrado');
+        const { quadrado } = elementsFake();
 
         const wordRandom = "SABER";
         const palpite = "CARRO"
@@ -96,15 +103,15 @@ describe('Definir cor da letra do palpite (quadrados)', () => {
         const objetoDeInsidencia = {"S": 1,"A": 1,"B": 1,"E": 1,"R": 1};
         const posicao = 19; //posicao = (3 * 5) + 4 = 19
 
-        validarLetras(palpite, wordRandom, linhaAtual, objetoDeInsidencia, {});
+        validarLetras(palpite, wordRandom, linhaAtual, objetoDeInsidencia, {}, quadrado);
 
-        expect(quadrado[posicao].classList.contains('letra-ausente')).toBe(true);// classlist é um metodo de objeto
-    });  
-});
+        expect(quadrado[posicao].classList.contains('letra-ausente')).toBe(true);
+    }) 
+})
 
 describe('Definir cor dos butons do teclado virtual', () => {
     test('deve adcionar a classe posicao-correta no button', () => {
-        const quadrado = document.querySelectorAll('.quadrado');
+        const { quadrado } = elementsFake();
 
         const wordRandom = "SABER";
         const palpite = "CARRO"
@@ -116,13 +123,13 @@ describe('Definir cor dos butons do teclado virtual', () => {
             "A": makeButon()
         }
 
-        validarLetras(palpite, wordRandom, linhaAtual, objetoDeInsidencia, objButtons);
+        validarLetras(palpite, wordRandom, linhaAtual, objetoDeInsidencia, objButtons, quadrado);
 
         expect(objButtons["A"].classList.contains('posicao-correta')).toBe(true);// verifica se a classe existe no button
-    });
+    })
 
     test('deve adcionar a classe posicao-errada no button', () => {
-        const quadrado = document.querySelectorAll('.quadrado');
+        const { quadrado } = elementsFake();
 
         const wordRandom = "SABER";
         const palpite = "CARRO"
@@ -134,13 +141,13 @@ describe('Definir cor dos butons do teclado virtual', () => {
             "R": makeButon()
         }
 
-        validarLetras(palpite, wordRandom, linhaAtual, objetoDeInsidencia, objButtons);
+        validarLetras(palpite, wordRandom, linhaAtual, objetoDeInsidencia, objButtons, quadrado);
 
         expect(objButtons["R"].classList.contains('posicao-errada')).toBe(true);
-    });
+    })
 
     test('deve adcionar a classe letra-ausente no button', () => {
-        const quadrado = document.querySelectorAll('.quadrado');
+        const { quadrado } = elementsFake();
 
         const wordRandom = "SABER";
         const palpite = "CARRO"
@@ -152,13 +159,13 @@ describe('Definir cor dos butons do teclado virtual', () => {
             "O": makeButon()
         }
 
-        validarLetras(palpite, wordRandom, linhaAtual, objetoDeInsidencia, objButtons);
+        validarLetras(palpite, wordRandom, linhaAtual, objetoDeInsidencia, objButtons, quadrado);
 
         expect(objButtons["O"].classList.contains('letra-ausente')).toBe(true);
-    });
+    })
 
     test('deve atualizar a cor da primeira tentativa (posicao errada) quando a proxima for posicao correta', () => {
-        const quadrado = document.querySelectorAll('.quadrado');
+        const { quadrado } = elementsFake();
 
         const wordRandom = "FOLHA";
         const primeiroPalpite = "FAZER";
@@ -170,20 +177,20 @@ describe('Definir cor dos butons do teclado virtual', () => {
             "A": makeButon()
         }
 
-        validarLetras(primeiroPalpite, wordRandom, linhaAtual, objetoDeInsidencia, objButtons);
+        validarLetras(primeiroPalpite, wordRandom, linhaAtual, objetoDeInsidencia, objButtons, quadrado);
 
         const segundoPalpite = "TENTA";
         linhaAtual = 1;
         objetoDeInsidencia = {"F": 1,"O": 1,"L": 1,"H": 1,"A": 1};
         
-        validarLetras(segundoPalpite, wordRandom, linhaAtual, objetoDeInsidencia, objButtons);
+        validarLetras(segundoPalpite, wordRandom, linhaAtual, objetoDeInsidencia, objButtons, quadrado);
 
-        expect(objButtons["A"].classList.contains('posicao-errada')).toBe(false)
-        expect(objButtons["A"].classList.contains('posicao-correta')).toBe(true)
-    });
+        expect(objButtons["A"].classList.contains('posicao-errada')).toBe(false);
+        expect(objButtons["A"].classList.contains('posicao-correta')).toBe(true);
+    })
 
     test('não deve sobreescrever classes diferentes de (posicao-correta) no butão quando a letra não estiver na posicão correta', () => {
-        const quadrado = document.querySelectorAll('.quadrado');
+        const { quadrado } = elementsFake();
 
         const wordRandom = "PIANO";
         const primeiroPalpite = "LIVRO";
@@ -195,15 +202,15 @@ describe('Definir cor dos butons do teclado virtual', () => {
             "O": makeButon()
         }
 
-        validarLetras(primeiroPalpite, wordRandom, linhaAtual, objetoDeInsidencia, objButtons);
+        validarLetras(primeiroPalpite, wordRandom, linhaAtual, objetoDeInsidencia, objButtons, quadrado);
 
         const segundoPalpite = "FOLHA";
         linhaAtual = 1;
         objetoDeInsidencia = {"P": 1,"I": 1,"A": 1,"N": 1,"O": 1};
         
-        validarLetras(segundoPalpite, wordRandom, linhaAtual, objetoDeInsidencia, objButtons);
+        validarLetras(segundoPalpite, wordRandom, linhaAtual, objetoDeInsidencia, objButtons, quadrado);
 
         expect(objButtons["O"].classList.contains('posicao-errada')).toBe(false);
         expect(objButtons["O"].classList.contains('posicao-correta')).toBe(true);
-    });
-});
+    })
+})

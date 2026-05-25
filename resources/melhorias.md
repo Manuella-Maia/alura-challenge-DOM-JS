@@ -100,20 +100,3 @@ O mock original só tinha add: jest.fn(). O toHaveBeenCalledWith('posicao-corret
 
 A solução foi criar um mock com Set nativo para simular o estado real do classList, permitindo verificar com contains se a classe correta estava presente e a incorreta havia sido removida.
 
-
-## Resolver problema testes
-
-game.test.js -> refatorar todos
-
-letter-status.test.js:
-
-Definir cor da letra do palpite (quadrados)
-    × deve adicionar a classe posicao-correta no quadrado quando a letra coincidir (48 ms)
-    × deve adicionar a classe posicao-errada no quadrado quando a letra estiver na posição errada (46 ms)
-    × deve adicionar a classe letra-ausente no quadrado quando a letra não existir na palavra sorteada (43 ms)
-  Definir cor dos butons do teclado virtual
-    × deve adcionar a classe posicao-correta no button (43 ms)
-    × deve adcionar a classe posicao-errada no button (42 ms)
-    × deve adcionar a classe letra-ausente no button (58 ms)
-    × deve atualizar a cor da primeira tentativa (posicao errada) quando a proxima for posicao correta (44 ms)
-    × não deve sobreescrever classes diferentes de (posicao-correta) no butão quando a letra não estiver na posicão correta (42 ms)
