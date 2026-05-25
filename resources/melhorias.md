@@ -34,6 +34,19 @@ O layout quebra em telas menores.
 
 ---
 
+### Modo claro e escuro
+ 
+O jogo só possui tema escuro.
+ 
+**Conceito: CSS Custom Properties + prefers-color-scheme** — usando as variáveis já definidas no `:root`, é possível redefini-las para um tema claro com uma media query ou via classe no `body`. O `prefers-color-scheme` detecta automaticamente a preferência do sistema operacional do usuário.
+
+### Animações ausentes
+ 
+O jogo não possui feedback visual animado ao revelar as letras.
+ 
+**Conceito: CSS Animations e Transitions** — permitem animar mudanças de estado dos elementos. No Wordle original, os quadrados viram como cartas ao revelar a cor. Isso é feito com `@keyframes` e a propriedade `animation`.
+ 
+ 
 ## JavaScript
 
 ### contarInsidenciaLetras pode usar reduce
@@ -67,36 +80,8 @@ const contarInsidenciaLetras = palavraRandomica.split('').reduce((objetoDeInside
 
 
 
-## resolvido Bug — atualização de cor do teclado
-
-Se uma letra for marcada como **amarela** (posição errada) em uma tentativa e na tentativa seguinte aparecer na **posição correta**, o botão do teclado deve ser atualizado de amarelo para **verde**.
-
-Atualmente o teclado não sobrescreve a cor anterior, então a letra fica amarela mesmo quando já foi confirmada na posição correta.
-
-Problema identificado
-
-O classList do DOM acumula classes sem remover as anteriores. Após dois palpites, o botão ficava com as duas classes simultaneamente:
-['posicao-errada', 'posicao-correta']
-
-Por que o amarelo vencia ? 
-
-Quando um elemento tem duas classes conflitantes na mesma propriedade (background-color), o CSS aplica a que foi declarada por último no arquivo. Como posicao-errada estava declarada depois de posicao-correta no style.css, o amarelo sobrescrevia o verde — não por especificidade, mas por ordem de cascata.
-
-Correção em validarLetras:
-
-No loop de letras verdes, antes de adicionar posicao-correta ao botão, as classes anteriores são removidas:
-
-javascriptobjButtons[letraPalpite].classList.remove('posicao-errada');
-objButtons[letraPalpite].classList.remove('letra-ausente');
-objButtons[letraPalpite].classList.add('posicao-correta');
-
-Nos loops de amarelo e cinza, uma guarda impede sobrescrever um botão já verde:
-
-javascriptif(objButtons[letraPalpite] && !objButtons[letraPalpite].classList.contains('posicao-correta'))
-
-Por que o teste passava mesmo com o bug ? 
-
-O mock original só tinha add: jest.fn(). O toHaveBeenCalledWith('posicao-correta') verificava se a chamada existiu em algum momento no histórico — e existia — mas não verificava o estado final do botão. As duas classes estavam acumuladas e o teste não sabia disso.
-
-A solução foi criar um mock com Set nativo para simular o estado real do classList, permitindo verificar com contains se a classe correta estava presente e a incorreta havia sido removida.
-
+### Consumir API externa de palavras
+ 
+Atualmente as palavras vêm de um arquivo JSON local.
+ 
+**Conceito: integração com APIs REST** — consumir uma API que retorna listas de palavras em português tornaria o jogo mais dinâmico e com um vocabulário maior, sem necessidade de manter o JSON manualmente.
