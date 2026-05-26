@@ -6,6 +6,8 @@
 
 Versão do jogo de adivinhação de palavras Wordle, desenvolvido durante o desafio **#7DaysOfCode da Alura** com foco em JavaScript puro e manipulação de DOM.
 
+Link de acesso: https://alura-challenge-dom-js.vercel.app/
+
 ## Tech Stack
 
 [![My Skills](https://skillicons.dev/icons?i=html,css,js,jest)](https://skillicons.dev)
