@@ -145,6 +145,7 @@ describe('Verificar encerramento do jogo', () => {
             linhaAtual: 0,
             indexLetra: 5,
             palavraDaVez: 'CASAR',
+            palavrasAceitas: ['livro', 'casar', 'piano', 'vento'],
             jogoEncerrado: false,
             butaoVisivel: false
         }
@@ -170,15 +171,25 @@ describe('Verificar encerramento do jogo', () => {
             linhaAtual: 5,
             indexLetra: 5,
             palavraDaVez: 'CASAR',
+            palavrasAceitas: ['livro', 'casar', 'piano', 'vento'],
             jogoEncerrado: false,
             butaoVisivel: false
         }
 
-        adcionarLetra('L', 0, null, {}, quadrado);
-        adcionarLetra('I', 1, null, {}, quadrado);
-        adcionarLetra('V', 2, null, {}, quadrado);
-        adcionarLetra('R', 3, null, {}, quadrado);
-        adcionarLetra('O', 4, null, {}, quadrado);
+        adcionarLetra('L', 25, null, {}, quadrado);//estudar a logica das posiçoes
+        adcionarLetra('I', 26, null, {}, quadrado);
+        adcionarLetra('V', 27, null, {}, quadrado);
+        adcionarLetra('R', 28, null, {}, quadrado);
+        adcionarLetra('O', 29, null, {}, quadrado);
+        //logica da posição (linhaAtual * 5) + indexLetra
+        //ao todo são 30 quadrados de 0 à 29, pois começa a contar do 0
+        //são 6 linhas, começando da linha 0 a linha 5
+        //Linha 0 → posições 0 a 4
+        // Linha 1 → posições 5 a 9
+        // Linha 2 → posições 10 a 14
+        // Linha 3 → posições 15 a 19
+        // Linha 4 → posições 20 a 24
+        // Linha 5 → posições 25 a 29
 
         const tecla = "ENTER";
 

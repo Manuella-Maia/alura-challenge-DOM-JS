@@ -261,7 +261,7 @@ const handleKeyAction = (tecla, estado, objButtons, button, elements) => {
                 linhaAtual++; 
                 indexLetra = 0;
 
-                if(linhaAtual === 6){
+                if(linhaAtual === 6){//linha de indice 6 corresponde a 7ª linha que não existe
                     showError(`Fim do jogo ! A palavra era: ${palavraDaVez}`);
                     jogoEncerrado = true;
                 };
@@ -325,8 +325,8 @@ const init = async () => {
 
 // Só inicializa no browser, nunca no Jest
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { loadWords, randomlyWord, adcionarLetra, 
-        apagarLetra, handleKeyAction, contarInsidenciaLetras, validarLetras, 
+    module.exports = { loadWords, loadAcceptedWords, randomlyWord, adcionarLetra, 
+        apagarLetra, handleKeyAction, contarInsidenciaLetras, validarLetras, validarPalpite, 
         showSuccess, showError, showInfo
     };
 }else{
