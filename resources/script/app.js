@@ -2,9 +2,10 @@ const NOTIFICACAO_TECLA_INVALIDA = 'Tecla pressionada inválida';
 const NOTIFICACAO_BACKSPACE_PALPITE_VAZIO = 'Não é possível apagar um palpite vazio';
 const NOTIFICACAO_PALPITE_VAZIO = 'Palpite vazio';
 const NOTIFICACAO_PALPITE_INCOMPLETO = 'Palpite incompleto';
+const NOTIFICACAO_PALPITE_INVALIDO = 'Palavra inválida';//colocar frase do figma
 const NOTIFICACAO_LIMITE_TENTATIVAS_ATINGIDO = 'Limite máximo de tentativas atingido';
 const NOTIFICACAO_LIMITE_LETRAS_POR_LINHA_ATINGIDO = 'Limite máximo de letras por linha atingido';
-const NOTIFICACAO_FIM_DE_JOGO_ACERTO = 'Você acertou! Fim de jogo!';
+const NOTIFICACAO_FIM_DE_JOGO_ACERTO = 'Você acertou! Fim de jogo !';
 
 const getElements = () => ({
     quadrado: document.querySelectorAll('.quadrado'),
@@ -16,15 +17,32 @@ const getElements = () => ({
 //--- Fetch API: leitura do arquivo json e retorno do array de palavras ---
 const loadWords = async () => {
     try {
-        const req = await fetch('./resources/assets/json/dataWords.json')
+        const req = await fetch('./resources/assets/json/dataWords.json');
 
-        if(!req.ok) throw new Error('Erro ao acessar API de palavras')
+        if(!req.ok) throw new Error('Erro ao acessar API de palavras');
         
-        const dados = await req.json()
+        const dados = await req.json();
 
-        return dados.words
+        return dados.words;
+
     } catch (error) {
-        console.error('Erro interno na requisição da API:',error)
+        console.error('Erro interno na requisição da API:',error);
+        return [];
+    }
+}
+
+const loadAcceptedWords = async () => {
+    try {
+        const req = await fetch('./resources/assets/json/acceptedWords.json');
+
+        if(!req.ok) throw new Error('Erro ao acessar API de palavras aceitas');
+
+        const dados = await req.json();
+
+        return dados.acceptedWords;
+        
+    } catch (error) {
+        console.error('Erro interno na requisição da API de palavras aceitas:',error);
         return [];
     }
 }
@@ -128,6 +146,12 @@ const montarPalpite = (linhaAtual, quadrado) => {
     return palpite;
 }
 
+const validarPalpite = (palpite, listaPalavrasAceitas ) => {
+    const result = listaPalavrasAceitas.includes(palpite.toLowerCase());
+
+    return result;
+}
+
 const contarInsidenciaLetras = (palavraRandomica) => {
     if(palavraRandomica.length === 0) return {};
 
@@ -195,7 +219,7 @@ const validarLetras = (palpite, palavraRandomica, linhaAtual, objetoDeInsidencia
 // --- Funções do Dom ---
 
 const handleKeyAction = (tecla, estado, objButtons, button, elements) => {
-    let {linhaAtual, indexLetra, palavraDaVez, jogoEncerrado} = estado;
+    let {linhaAtual, indexLetra, palavraDaVez, palavrasAceitas, jogoEncerrado} = estado;
     let { quadrado } = elements
 
     if(estado.jogoEncerrado) return estado;
@@ -219,6 +243,13 @@ const handleKeyAction = (tecla, estado, objButtons, button, elements) => {
     }else if(tecla === 'ENTER'){
         if(indexLetra === 5){
             const palpiteGerado = montarPalpite(linhaAtual, quadrado);
+            const palpiteValido = validarPalpite(palpiteGerado, palavrasAceitas);
+
+            if(!palpiteValido){
+                showInfo(NOTIFICACAO_PALPITE_INVALIDO);
+                return estado;//devolve o estado sem incrementar a linhaAtual
+            }
+
             const obejto = contarInsidenciaLetras(palavraDaVez);
 
             validarLetras(palpiteGerado, palavraDaVez, linhaAtual, obejto, objButtons, quadrado);
@@ -241,16 +272,18 @@ const handleKeyAction = (tecla, estado, objButtons, button, elements) => {
     }else{
         showInfo(NOTIFICACAO_TECLA_INVALIDA);
     }
-    return {linhaAtual, indexLetra, palavraDaVez, jogoEncerrado};
+    return {linhaAtual, indexLetra, palavraDaVez, palavrasAceitas, jogoEncerrado};
 }
 
 const init = async () => {
     const words = await loadWords();
+    const acceptedWords = await loadAcceptedWords();
 
     let estadoAtual = {
         linhaAtual: 0,
         indexLetra: 0,
         palavraDaVez: randomlyWord(words).toLocaleUpperCase(),
+        palavrasAceitas: acceptedWords,//array com as palavras aceitas
         jogoEncerrado: false,
         butaoVisivel: false
     }
