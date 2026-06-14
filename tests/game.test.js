@@ -25,7 +25,8 @@ beforeEach(() => {
     const script = require('../resources/script/app.js');// não dispara fetch nem init()
     global.adcionarLetra = script.adcionarLetra;
     global.apagarLetra = script.apagarLetra;
-    global.handleKeyAction = script.handleKeyAction; 
+    global.handleKeyAction = script.handleKeyAction;
+    global.validarPalpite = script.validarPalpite;
     global.Toastify = () => ({showToast: () => {}});
 })
 
@@ -133,6 +134,26 @@ describe('Mapeamento de teclas para elementos do teclado virtual', () => {
         apagarLetra(tecla, 0, button, objButtons, quadrado);
         
         expect(objButtons[tecla]).toBeUndefined();
+    })
+})
+
+describe('Verificar palpite gerado', () => {
+    test('deve retornar true quando a palavra do palpite estiver inclusa na lista de palavras', () => {
+        const listaPalavras = ["algum","amado","amigo","andar","anexo"];
+        const palpite = "AMADO";
+
+        const result = validarPalpite(palpite, listaPalavras);
+        
+        expect(result).toBe(true);
+    })
+
+    test('deve retornar falso caso a palavra do palpite não estiver inclusa na lista de palavras', () => {
+        const listaPalavras = ["algum","amado","amigo","andar","anexo"];
+        const palpite = "CITAR";
+
+        const result = validarPalpite(palpite, listaPalavras);
+        
+        expect(result).toBe(false);
     })
 })
 
