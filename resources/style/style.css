@@ -53,18 +53,20 @@ main{
 
 h2{
     color: #ffff;
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    margin-left: 50px;
+    /* align-items: center; */
+    /* display: flex;
+    justify-content: center; */
+    /* margin-left: 50px; */
 }
 
 header{
-    margin-bottom: 50px;
     width: 100%;
     display: flex;
     justify-content: flex-start;
+    align-items: center;
+    gap: 40px;
     padding: 20px 0 20px 40px;
+    margin-bottom: 50px;
     border-bottom: 1px solid #818384;
     
 }
@@ -73,12 +75,38 @@ header{
     display: flex;
     flex-direction: column;
     gap: 7px;
+    width: 100%;
+    max-width: 338px;
+    margin: 0 auto;
+}
+
+.linha{
+    /* display: flex;
+    gap: 7px  */
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 colunas de tamanhos iguais (1 fração cada) */
+    gap: 7px;
+    width: 100%;
+}
+
+.quadrado{
+    /* width: var(--tamanho-quadrado);
+    height: var(--tamanho-quadrado); */
+    aspect-ratio: 1 / 1;/* mantem a proporção dos quadrados dependendo do espaço disponivel */
+
+    border: 1px solid #585858;
+    border-width: 1px;
+    border-radius: 0px;
+    font-size: 34px;
 }
 
 .teclado{
-    width: var(--teclado-largura);
+    width: 100%;
+    max-width: var(--teclado-largura);
     margin-top: 40px;
     margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
 
     display: flex;
     flex-direction: column;
@@ -86,46 +114,39 @@ header{
     gap: 8px;
 }
 
-.linha{
-    display: flex;
-    gap: 7px 
-}
-
-.quadrado{
-    width: var(--tamanho-quadrado);
-    height: var(--tamanho-quadrado);
-    border: 1px solid #585858;
-    border-width: 1px;
-    border-radius: 0px;
-    font-size: 34px;
-}
-
 .quadrado-teclado{
-    width: var(--tamanho-quadrado-teclado-largura);
-    height: var(--tamanho-quadrado-diferente-altura);
-    border-width: 1px;
+    /* width: var(--tamanho-quadrado-teclado-largura); */
+    /* border-width: 1px; */
+    height: var(--tamanho-quadrado-teclado-altura);
     background-color: var(--cor-fundo-quadrado-teclado);
-    border-radius: 1px;
+    border: none;
+    border-radius: 2px;
     font-size: 22px;
+    cursor: pointer;
+    /* font-size: 1.2rem; */
+    flex: 1 1 var(--tamanho-quadrado-teclado-largura);
+    max-width: var(--tamanho-quadrado-teclado-largura);
+
 }
 
-.quadrado,
-.quadrado-teclado,
-.quadrado-teclado-enter,
-.quadrado-teclado-apagar{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color:#ffff;
-    font-weight: bold;
-}
-
-.quadrado-teclado-enter,
-.quadrado-teclado-apagar{
-    width: var(--tamanho-quadrado-diferente-largura);
-    height: var(--tamanho-quadrado-diferente-altura);
+.quadrado-teclado.enter,
+.quadrado-teclado.apagar{
+    /* width: var(--tamanho-quadrado-diferente-largura);
+    height: var(--tamanho-quadrado-diferente-altura); */
+    flex: 1.8 1 var(--tamanho-quadrado-diferente-largura);
+    max-width: var(--tamanho-quadrado-diferente-largura);
     background-color: var(--cor-fundo-quadrado-teclado);
-    border-radius: 1px;
+    border-radius: 2px;
+}
+
+.quadrado-teclado.enter{
+    font-size: 18px;
+}
+
+.quadrado-teclado.apagar img{
+    max-width: 24px;
+    height: auto;
+    display: block;
 }
 
 .linha-teclado{
@@ -135,25 +156,39 @@ header{
     width: 100%;
 }
 
+.quadrado,
+.quadrado-teclado{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color:#ffff;
+    font-weight: bold;
+}
+
 .area-butao-reset{
     display: none;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 30px;
 }
 
 .area-butao-reset.visible{
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 } 
 
 .bntReset{
     width: var(--button-reset-largura);
     height: var(--button-reset-altura);
+    border: none;
     border-radius: 10px;
-    margin-top: 10px;
-    margin-bottom: 30px;
     
     background-color: var(--button-reset-cor-fundo);
     color: var(--button-reset-cor);
     font-weight: 700;
     font-size: 16px;
+    cursor: pointer;
 }
 
 .posicao-correta{background-color: var(--cor-posicao-correta); color: white;}
@@ -161,3 +196,76 @@ header{
 .posicao-errada{background-color: var(--cor-posicao-errada); color:white;}
 
 .letra-ausente{background-color: var(--cor-letra-ausente); color: white;}
+
+
+/* FEEDBACK AO CLICAR*/
+/* efeito hover comum em desktop e em celular o active (click) do butao */
+@media (hover: hover) {
+    .quadrado-teclado:hover{
+        background-color: #939596;
+        transition: background-color 0.15s ease;
+    }
+}
+
+.quadrado-teclado:active{
+    transform: scale(0.95);
+    background-color: #707273;
+    transition: transform 0.05s ease;
+}
+
+/* --- CONFIGURAÇÃO PARA CELULARES --- */
+@media (max-width: 480px) {
+    .tabuleiro{
+        width: 75%;
+        max-width: 300px;
+        gap: 5px;
+    }
+
+    .linha{
+        gap: 5px;
+    }
+
+    .quadrado{
+        font-size: 24px;
+    }
+
+    .teclado{
+        width: 100%;
+        max-width: 100%;
+        padding: 0 8px;
+        box-sizing: border-box;
+        gap: 6px;
+    }
+
+    .linha-teclado{
+        width: 100%;
+        gap: 4px;
+    }
+
+    .quadrado-teclado,
+    .quadrado-teclado.enter,
+    .quadrado-teclado.apagar {
+        height: 48px;
+        flex-basis: 0; 
+        min-width: 0;
+    }
+
+    .quadrado-teclado{
+        flex-grow: 1;
+        font-size: 16px;
+    }
+
+    .quadrado-teclado.enter,
+    .quadrado-teclado.apagar {
+        flex-grow: 1.5;
+    }
+
+    .quadrado-teclado.enter{
+        font-size: 10px;
+    }
+
+    .quadrado-teclado.apagar img {
+        max-width: 18px;
+        height: auto;
+    }
+}

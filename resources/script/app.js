@@ -107,6 +107,10 @@ const showInfo = (msg) => {
 // --- Funções relacionadas ao Reset do jogo ---
 const manipulateVisibilityReset = (areaReset) => {
     areaReset.classList.add('visible');
+    areaReset.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'center'
+    });
 }
 
 const manipulateActionReset = () => {
